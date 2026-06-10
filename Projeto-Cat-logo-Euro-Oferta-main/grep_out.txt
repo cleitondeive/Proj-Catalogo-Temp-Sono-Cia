@@ -1,0 +1,103 @@
+125:  const [quickViewProduct, setQuickViewProduct] = useState<any | null>(null);
+396:      {quickViewProduct && (
+446:                  {activeImageIdx < [quickViewProduct?.image, ...(quickViewProduct?.gallery || [])].filter(Boolean).length - 1 && (
+452:                          Math.min([quickViewProduct?.image, ...(quickViewProduct?.gallery || [])].filter(Boolean).length - 1, prev + 1),
+461:                      [quickViewProduct?.image, ...(quickViewProduct?.gallery || [])].filter(Boolean)[activeImageIdx]
+463:                    alt={quickViewProduct.name}
+474:                {[quickViewProduct?.image, ...(quickViewProduct?.gallery || [])].filter(Boolean).map((img, idx) => (
+506:                {quickViewProduct.name}
+523:                  {quickViewProduct.showPrice !== false ? `R$ ${quickViewProduct.colors?.find((c: any) => c.name === (quickViewProduct.color || quickViewProduct.colors?.[0]?.name))?.price || quickViewProduct.price}` : <span className="text-[18px] uppercase tracking-widest text-brand-blue">Consulte o Preço</span>}
+525:                {quickViewProduct.originalPrice && quickViewProduct.showPrice !== false && (
+527:                  R$ {quickViewProduct.originalPrice}
+533:                {quickViewProduct.colors?.find((c: any) => c.name === (quickViewProduct.color || quickViewProduct.colors?.[0]?.name))?.description || quickViewProduct.description || "Design escandinavo em madeira de carvalho maciço. Perfeito para salas minimalistas com um toque de elegância e sofisticação atemporal."}
+537:                const activeColorObj = quickViewProduct.colors?.find((c: any) => c.name === (quickViewProduct.color || quickViewProduct.colors?.[0]?.name));
+538:                const actualLength = (activeColorObj?.length && String(activeColorObj.length).trim() !== "") ? activeColorObj.length : quickViewProduct.length;
+539:                const actualWidth = (activeColorObj?.width && String(activeColorObj.width).trim() !== "") ? activeColorObj.width : quickViewProduct.width;
+540:                const actualHeight = (activeColorObj?.height && String(activeColorObj.height).trim() !== "") ? activeColorObj.height : quickViewProduct.height;
+541:                const actualWeight = (activeColorObj?.weight && String(activeColorObj.weight).trim() !== "") ? activeColorObj.weight : quickViewProduct.weight;
+548:                const dTags = activeColorObj?.tags || quickViewProduct.tags;
+549:                const dStock = quickViewProduct.showStock ? quickViewProduct.stock : null;
+602:              {quickViewProduct.colors && quickViewProduct.colors.length > 0 && (
+605:                  {quickViewProduct.colors.length === 1 ? 'Cor Disponível' : 'Selecione a Cor'}
+606:                  {quickViewProduct.color && <span className="text-gray-500 font-medium capitalize hidden md:inline-block">- {quickViewProduct.color}</span>}
+609:                  {quickViewProduct.colors.map((c: any, i: number) => {
+610:                    const isSelected = quickViewProduct.color === c.name || (!quickViewProduct.color && i===0);
+614:                        onClick={() => { setQuickViewProduct({ ...quickViewProduct, color: c.name, ...(c.image && { image: c.image }) }); setActiveImageIdx(0); }}
+628:              {quickViewProduct.sizes && quickViewProduct.sizes.length > 0 && (
+631:                  {quickViewProduct.sizes.length === 1 ? 'Tamanho Principal' : 'Selecione o Tamanho'}
+632:                  {quickViewProduct.size && <span className="text-gray-500 font-medium capitalize hidden md:inline-block">- {quickViewProduct.size}</span>}
+635:                  {quickViewProduct.sizes.map((s: string, i: number) => (
+638:                      onClick={() => setQuickViewProduct({ ...quickViewProduct, size: s })}
+639:                      className={`px-4 py-1.5 rounded-[10px] text-[12px] font-bold border transition-all ${quickViewProduct.size === s || (!quickViewProduct.size && i===0) ? 'bg-[#0F172A] text-white border-[#0F172A] shadow-[0_2px_8px_rgba(15,23,42,0.15)]' : 'bg-[#F8FAFC] text-gray-600 border-transparent hover:border-gray-300 hover:bg-gray-100'}`}
+651:                  {quickViewProduct.showPrice !== false ? (
+652:                  <button onClick={(e) => addToCart(quickViewProduct, e)} className="flex-[4] bg-[#0F172A] hover:bg-[#1E293B] text-white py-3.5 md:py-4 px-4 md:px-5 rounded-[12px] font-bold transition-all duration-300 cursor-pointer flex items-center justify-center gap-2.5 text-[14px] md:text-[15px] shadow-[0_4px_16px_rgba(15,23,42,0.15)] hover:shadow-[0_6px_20px_rgba(15,23,42,0.25)] hover:-translate-y-0.5 group/btn">
+658:                    href={`https://wa.me/55${storeSettings.whatsapp.replace(/\D/g, '')}?text=Olá! Gostaria de consultar o preço do produto: ${quickViewProduct.name} (SKU: ${quickViewProduct.sku || 'N/A'})`}
+671:                    onClick={(e) => toggleWishlist(quickViewProduct, e)}
+674:                      className={`w-[22px] h-[22px] transition-transform duration-300 group-hover/wish:scale-110 ${wishlist.some(item => item.name === quickViewProduct?.name) ? 'fill-red-500 text-red-500' : ''}`}
+690:                const activeColorObj = quickViewProduct.colors?.find((c: any) => c.name === (quickViewProduct.color || quickViewProduct.colors?.[0]?.name));
+691:                const actualLength = (activeColorObj?.length && String(activeColorObj.length).trim() !== "") ? activeColorObj.length : quickViewProduct.length;
+692:                const actualWidth = (activeColorObj?.width && String(activeColorObj.width).trim() !== "") ? activeColorObj.width : quickViewProduct.width;
+693:                const actualHeight = (activeColorObj?.height && String(activeColorObj.height).trim() !== "") ? activeColorObj.height : quickViewProduct.height;
+694:                const actualWeight = (activeColorObj?.weight && String(activeColorObj.weight).trim() !== "") ? activeColorObj.weight : quickViewProduct.weight;
+701:                const dTags = activeColorObj?.tags || quickViewProduct.tags;
+702:                const dStock = quickViewProduct.showStock ? quickViewProduct.stock : null;
+789:                {quickViewProduct.colors && quickViewProduct.colors.length > 0 && (
+792:                    {quickViewProduct.colors.length === 1 ? 'Cor Disponível' : 'Selecione a Cor'}
+795:                    {quickViewProduct.colors.map((c: any, i: number) => {
+796:                      const isSelected = quickViewProduct.color === c.name || (!quickViewProduct.color && i===0);
+800:                          onClick={() => { setQuickViewProduct({ ...quickViewProduct, color: c.name, ...(c.image && { image: c.image }) }); setActiveImageIdx(0); }}
+814:                {quickViewProduct.sizes && quickViewProduct.sizes.length > 0 && (
+817:                    {quickViewProduct.sizes.length === 1 ? 'Tamanho Principal' : 'Selecione o Tamanho'}
+820:                    {quickViewProduct.sizes.map((s: string, i: number) => (
+823:                        onClick={() => setQuickViewProduct({ ...quickViewProduct, size: s })}
+824:                        className={`px-5 py-2.5 rounded-[12px] text-[13px] font-bold border transition-all ${quickViewProduct.size === s || (!quickViewProduct.size && i===0) ? 'bg-[#0F172A] text-white border-[#0F172A] shadow-[0_4px_12px_rgba(15,23,42,0.15)]' : 'bg-[#F8FAFC] text-gray-600 border-transparent hover:border-gray-300 hover:bg-gray-100'}`}
+864:      {isZoomed && quickViewProduct && (
+895:                  [quickViewProduct?.image, ...(quickViewProduct?.gallery || [])].filter(Boolean)[activeImageIdx]
+897:                alt={quickViewProduct.name}
+912:            {activeImageIdx < [quickViewProduct?.image, ...(quickViewProduct?.gallery || [])].filter(Boolean).length - 1 && (
+917:                  setActiveImageIdx((prev: number) => Math.min([quickViewProduct?.image, ...(quickViewProduct?.gallery || [])].filter(Boolean).length - 1, prev + 1));
+947:                className={`p-2 rounded-full md:hidden ${activeImageIdx === [quickViewProduct?.image, ...(quickViewProduct?.gallery || [])].filter(Boolean).length - 1 ? "text-white/30" : "text-white/80"}`}
+950:                  setActiveImageIdx((prev: number) => Math.min([quickViewProduct?.image, ...(quickViewProduct?.gallery || [])].filter(Boolean).length - 1, prev + 1));
+1224:  const [quickViewProduct, setQuickViewProduct] = useState<any | null>(null);
+3085:      {quickViewProduct && (
+3135:                  {activeImageIdx < [quickViewProduct?.image, ...(quickViewProduct?.gallery || [])].filter(Boolean).length - 1 && (
+3141:                          Math.min([quickViewProduct?.image, ...(quickViewProduct?.gallery || [])].filter(Boolean).length - 1, prev + 1),
+3150:                      [quickViewProduct?.image, ...(quickViewProduct?.gallery || [])].filter(Boolean)[activeImageIdx]
+3152:                    alt={quickViewProduct.name}
+3163:                {[quickViewProduct?.image, ...(quickViewProduct?.gallery || [])].filter(Boolean).map((img, idx) => (
+3195:                {quickViewProduct.name}
+3212:                  {quickViewProduct.showPrice !== false ? `R$ ${quickViewProduct.colors?.find((c: any) => c.name === (quickViewProduct.color || quickViewProduct.colors?.[0]?.name))?.price || quickViewProduct.price}` : <span className="text-[18px] uppercase tracking-widest text-brand-blue">Consulte o Preço</span>}
+3214:                {quickViewProduct.originalPrice && quickViewProduct.showPrice !== false && (
+3216:                  R$ {quickViewProduct.originalPrice}
+3222:                {quickViewProduct.colors?.find((c: any) => c.name === (quickViewProduct.color || quickViewProduct.colors?.[0]?.name))?.description || quickViewProduct.description || "Design escandinavo em madeira de carvalho maciço. Perfeito para salas minimalistas com um toque de elegância e sofisticação atemporal."}
+3228:                  {quickViewProduct.showPrice !== false ? (
+3229:                  <button onClick={(e) => addToCart(quickViewProduct, e)} className="flex-[4] bg-brand-blue hover:bg-brand-blue-hover text-white py-3.5 md:py-4 px-4 md:px-5 rounded-[12px] font-bold transition-all duration-300 cursor-pointer flex items-center justify-center gap-2.5 text-[14px] md:text-[15px] shadow-[0_4px_16px_rgba(1,82,148,0.25)] hover:shadow-[0_6px_20px_rgba(1,82,148,0.35)] hover:-translate-y-0.5 group/btn">
+3235:                    href={`https://wa.me/55${storeSettings.whatsapp.replace(/\D/g, '')}?text=Olá! Gostaria de consultar o preço do produto: ${quickViewProduct.name} (SKU: ${quickViewProduct.sku || 'N/A'})`}
+3248:                    onClick={(e) => toggleWishlist(quickViewProduct, e)}
+3251:                      className={`w-[22px] h-[22px] transition-transform duration-300 group-hover/wish:scale-110 ${wishlist.some(item => item.name === quickViewProduct?.name) ? 'fill-red-500 text-red-500' : ''}`}
+3267:                const activeColorObj = quickViewProduct.colors?.find((c: any) => c.name === (quickViewProduct.color || quickViewProduct.colors?.[0]?.name));
+3268:                const actualLength = (activeColorObj?.length && String(activeColorObj.length).trim() !== "") ? activeColorObj.length : quickViewProduct.length;
+3269:                const actualWidth = (activeColorObj?.width && String(activeColorObj.width).trim() !== "") ? activeColorObj.width : quickViewProduct.width;
+3270:                const actualHeight = (activeColorObj?.height && String(activeColorObj.height).trim() !== "") ? activeColorObj.height : quickViewProduct.height;
+3271:                const actualWeight = (activeColorObj?.weight && String(activeColorObj.weight).trim() !== "") ? activeColorObj.weight : quickViewProduct.weight;
+3278:                const dTags = activeColorObj?.tags || quickViewProduct.tags;
+3279:                const dStock = quickViewProduct.showStock ? quickViewProduct.stock : null;
+3362:              {quickViewProduct.colors && quickViewProduct.colors.length > 0 && (
+3365:                  {quickViewProduct.colors.length === 1 ? 'Cor Disponível' : 'Selecione a Cor'}
+3366:                  {quickViewProduct.color && <span className="text-gray-500 font-medium capitalize hidden md:inline-block">- {quickViewProduct.color}</span>}
+3369:                  {quickViewProduct.colors.map((c: any, i: number) => {
+3370:                    const isSelected = quickViewProduct.color === c.name || (!quickViewProduct.color && i===0);
+3374:                        onClick={() => { setQuickViewProduct({ ...quickViewProduct, color: c.name, ...(c.image && { image: c.image }) }); setActiveImageIdx(0); }}
+3388:              {quickViewProduct.sizes && quickViewProduct.sizes.length > 0 && (
+3391:                  {quickViewProduct.sizes.length === 1 ? 'Tamanho Principal' : 'Selecione o Tamanho'}
+3392:                  {quickViewProduct.size && <span className="text-gray-500 font-medium capitalize hidden md:inline-block">- {quickViewProduct.size}</span>}
+3395:                  {quickViewProduct.sizes.map((s: string, i: number) => (
+3398:                      onClick={() => setQuickViewProduct({ ...quickViewProduct, size: s })}
+3399:                      className={`px-4 py-1.5 rounded-[10px] text-[12px] font-bold border transition-all ${quickViewProduct.size === s || (!quickViewProduct.size && i===0) ? 'bg-[#0F172A] text-white border-[#0F172A] shadow-[0_2px_8px_rgba(15,23,42,0.15)]' : 'bg-[#F8FAFC] text-gray-600 border-transparent hover:border-gray-300 hover:bg-gray-100'}`}
+3439:      {isZoomed && quickViewProduct && (
+3470:                  [quickViewProduct?.image, ...(quickViewProduct?.gallery || [])].filter(Boolean)[activeImageIdx]
+3472:                alt={quickViewProduct.name}
+3487:            {activeImageIdx < [quickViewProduct?.image, ...(quickViewProduct?.gallery || [])].filter(Boolean).length - 1 && (
+3492:                  setActiveImageIdx((prev: number) => Math.min([quickViewProduct?.image, ...(quickViewProduct?.gallery || [])].filter(Boolean).length - 1, prev + 1));
+3522:                className={`p-2 rounded-full md:hidden ${activeImageIdx === [quickViewProduct?.image, ...(quickViewProduct?.gallery || [])].filter(Boolean).length - 1 ? "text-white/30" : "text-white/80"}`}
+3525:                  setActiveImageIdx((prev: number) => Math.min([quickViewProduct?.image, ...(quickViewProduct?.gallery || [])].filter(Boolean).length - 1, prev + 1));

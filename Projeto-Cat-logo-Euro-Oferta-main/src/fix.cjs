@@ -1,0 +1,1 @@
+const fs=require('fs'); let c=fs.readFileSync('src/App.tsx','utf8'); c=c.split('const hasDimensions = Boolean(actualLength || actualWidth || actualHeight || actualWeight || quickViewProduct);').join('const hasDimensions = Boolean(actualLength || actualWidth || actualHeight || actualWeight);'); fs.writeFileSync('src/App.tsx',c);

@@ -1,0 +1,321 @@
+import React, { useEffect, useState } from 'react';
+import { Lead, Product, AdminUser } from '../../types';
+import { useStore } from '../../store';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
+import { Users, DollarSign, Target, TrendingUp, Package, Star, Search, X, ArrowUpRight, ChevronRight } from 'lucide-react';
+import { LeadDetailsModal } from './CRM';
+
+export default function Metrics({ leads, products }: { leads: Lead[], products: Product[] }) {
+  const [time, setTime] = useState(new Date());
+  const { data } = useStore();
+  const [currentUser, setCurrentUser] = useState<AdminUser | null>(null);
+  const [vipListFilter, setVipListFilter] = useState<'VIP Gold' | 'VIP Premium' | 'Cliente Frequente' | 'Cliente Potencial' | null>(null);
+  const [selectedLead, setSelectedLead] = useState<any>(null);
+  const [searchVip, setSearchVip] = useState('');
+
+  useEffect(() => {
+    const timer = setInterval(() => setTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
+  useEffect(() => {
+    const userId = localStorage.getItem('admin_user_id');
+    const user = data.users?.find(u => u.id === userId);
+    if (user) setCurrentUser(user);
+    else setCurrentUser(data.users?.[0] || null);
+  }, [data.users]);
+
+  const getGreeting = () => {
+    const hour = time.getHours();
+    if (hour < 12) return 'Bom dia';
+    if (hour < 18) return 'Boa tarde';
+    return 'Boa noite';
+  };
+
+  // Mock data for charts
+  const chartData = [
+    { name: 'Seg', leads: 4 },
+    { name: 'Ter', leads: 7 },
+    { name: 'Qua', leads: 5 },
+    { name: 'Qui', leads: 12 },
+    { name: 'Sex', leads: 15 },
+    { name: 'Sáb', leads: 22 },
+    { name: 'Dom', leads: 18 },
+  ];
+
+  const totalSpent = leads.reduce((acc, l) => acc + (l.totalSpent || 0), 0);
+  const conversionRate = leads.length > 0 ? (leads.filter(l => l.status === 'Finalizado').length / leads.length) * 100 : 0;
+  
+  return (
+    <div className="p-5 sm:p-8 pb-32 max-w-7xl mx-auto space-y-6 sm:space-y-8 animate-fade-in">
+      <div className="flex flex-col sm:flex-row sm:justify-between items-start sm:items-end gap-6 sm:gap-0 border-b border-gray-100 pb-6 sm:pb-8">
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <span className="flex h-2 w-2 relative">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+            </span>
+            <span className="text-[10px] font-bold text-gray-400 uppercase tracking-[0.2em]">Sistema Operacional • Online</span>
+          </div>
+          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-[#0F172A] tracking-tight">{getGreeting()}, {currentUser?.name.split(' ')[0] || 'Admin'}</h1>
+          <p className="text-gray-500 mt-2 font-medium">Acompanhe suas métricas de vendas e engajamento em tempo real.</p>
+        </div>
+        <div className="flex flex-col items-start sm:items-end gap-2">
+          <div className="font-mono text-sm font-bold text-[#0F172A] bg-gray-50 px-4 py-2 rounded-xl border border-gray-100 shadow-sm flex items-center gap-2">
+             <span>{time.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}</span>
+             <span className="w-1 h-1 rounded-full bg-gray-300"></span>
+             <span className="text-gray-400">{time.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short' }).toUpperCase()}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <StatCard title="Total de Leads" value={leads.length.toString()} icon={<Users />} trend="+12%" />
+        <StatCard title="Vendas Fechadas" value={`R$ ${totalSpent.toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`} icon={<DollarSign />} trend="+5.4%" positive />
+        <StatCard title="Taxa de Conversão" value={`${conversionRate.toFixed(1)}%`} icon={<Target />} trend="+2.1%" />
+        <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 group hover:shadow-md transition-shadow flex flex-col justify-between">
+          <div className="flex justify-between items-start mb-4">
+            <div className="w-12 h-12 rounded-xl bg-gray-50 text-brand-blue flex items-center justify-center group-hover:scale-110 transition-transform">
+              <Package strokeWidth={1.5} className="w-6 h-6" />
+            </div>
+            <span className="text-xs font-bold px-2 py-1 rounded-full bg-emerald-50 text-emerald-600">
+              Catálogo
+            </span>
+          </div>
+          <div>
+            <p className="text-gray-400 text-sm font-bold uppercase tracking-wider mb-2">Produtos</p>
+            <div className="flex items-end gap-3">
+              <h3 className="text-2xl md:text-3xl font-bold tracking-tight text-[#0F172A]">{products.length}</h3>
+              <div className="flex bg-gray-50 rounded-lg p-1 mb-1 gap-2 text-xs font-bold">
+                <span className="text-emerald-600 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                  {products.filter(p => p.status === 'active').length}
+                </span>
+                <span className="text-gray-400 flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-gray-400"></span>
+                  {products.filter(p => p.status !== 'active').length}
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+          <div className="flex items-center justify-between mb-8">
+            <h2 className="text-lg font-bold text-[#0F172A]">Volume de Leads Diário</h2>
+            <div className="flex items-center gap-2 text-sm text-gray-500">
+              <span className="w-3 h-3 rounded-full bg-brand-blue"></span> Leads no WhatsApp
+            </div>
+          </div>
+          <div className="h-72 w-full">
+            <ResponsiveContainer width="100%" height="100%">
+              <AreaChart data={chartData} margin={{ top: 0, right: 0, left: 0, bottom: 0 }}>
+                <defs>
+                  <linearGradient id="colorLeads" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#1C202F" stopOpacity={0.1}/>
+                    <stop offset="95%" stopColor="#1C202F" stopOpacity={0}/>
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} dy={10} />
+                <YAxis axisLine={false} tickLine={false} tick={{ fill: '#94a3b8', fontSize: 12 }} dx={-10} />
+                <Tooltip 
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}
+                  labelStyle={{ fontWeight: 'bold', color: '#0f172a' }}
+                />
+                <Area type="monotone" dataKey="leads" stroke="#1C202F" strokeWidth={3} fillOpacity={1} fill="url(#colorLeads)" />
+              </AreaChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+
+        <div className="bg-white p-7 rounded-[28px] shadow-sm border border-gray-100 flex flex-col relative overflow-hidden group">
+          <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-gradient-to-br from-amber-100/40 to-transparent blur-3xl opacity-60 rounded-full transform translate-x-1/3 -translate-y-1/3 pointer-events-none" />
+          
+          <h2 className="text-lg font-bold text-[#0F172A] mb-8 relative z-10 flex items-center justify-between">
+             <div className="flex items-center gap-3">
+               <div className="w-9 h-9 rounded-full bg-amber-50 flex items-center justify-center border border-amber-100/50">
+                 <Star className="w-4 h-4 text-amber-500" fill="currentColor" />
+               </div>
+               <span>Programa VIP</span>
+             </div>
+             <div className="text-[10px] font-bold uppercase tracking-widest bg-gray-50 px-2.5 py-1 rounded-full text-gray-400 border border-gray-100 flex items-center gap-1.5 shadow-sm">
+               <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" /> Ativo
+             </div>
+          </h2>
+          
+          <div className="flex-1 flex flex-col z-10 gap-5 relative">
+             <div className="grid grid-cols-2 gap-4">
+               {/* VIP Gold Card */}
+               <div 
+                 onClick={() => setVipListFilter('VIP Gold')}
+                 className="bg-gradient-to-br from-amber-50 to-orange-50 p-5 rounded-2xl shadow-sm hover:shadow-md cursor-pointer border border-amber-100/60 transform hover:-translate-y-0.5 transition-all duration-300 relative group overflow-hidden"
+               >
+                 <div className="absolute right-0 bottom-0 opacity-[0.03] transform translate-x-4 translate-y-4 group-hover:scale-110 transition-transform"><Star className="w-24 h-24 text-amber-900" fill="currentColor" /></div>
+                 <h3 className="text-[10px] font-bold text-amber-700 uppercase tracking-widest mb-1 flex items-center justify-between">
+                   VIP Gold
+                 </h3>
+                 <div className="flex items-end justify-between mt-2">
+                   <span className="text-3xl font-black text-amber-900 tracking-tight">{leads.filter(l => l.vipLevel === 'VIP Gold').length}</span>
+                   <ChevronRight className="w-4 h-4 text-amber-400 mb-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                 </div>
+               </div>
+
+               {/* VIP Premium Card */}
+               <div 
+                 onClick={() => setVipListFilter('VIP Premium')}
+                 className="bg-[#0F172A] p-5 rounded-2xl shadow-sm hover:shadow-[0_8px_20px_rgb(0,0,0,0.12)] cursor-pointer transform hover:-translate-y-0.5 transition-all duration-300 relative group overflow-hidden border border-gray-800"
+               >
+                 <div className="absolute right-0 bottom-0 opacity-[0.03] transform translate-x-4 translate-y-4 group-hover:scale-110 transition-transform"><Star className="w-24 h-24 text-white" fill="currentColor" /></div>
+                 <h3 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">VIP Premium</h3>
+                 <div className="flex items-end justify-between mt-2">
+                   <span className="text-3xl font-black text-white tracking-tight">{leads.filter(l => l.vipLevel === 'VIP Premium').length}</span>
+                   <ChevronRight className="w-4 h-4 text-gray-500 mb-2 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                 </div>
+               </div>
+             </div>
+
+             <div className="bg-blue-50/50 border border-blue-100/50 p-4 rounded-2xl relative overflow-hidden my-1">
+               <div className="absolute left-0 top-0 w-1 h-full bg-blue-400 rounded-l-2xl" />
+               <p className="text-[13px] text-gray-600 font-medium leading-relaxed pl-2 relative z-10">
+                 Sua principal fonte de lucro. Recomendamos ofertas exclusivas "One-on-One" via WhatsApp para os <strong className="text-brand-blue font-bold">{leads.filter(l => l.vipLevel === 'VIP Gold' || l.vipLevel === 'VIP Premium').length} clientes estrelas</strong>.
+               </p>
+             </div>
+
+             {/* Tiers Base */}
+             <div className="grid grid-cols-2 gap-3 mt-1">
+                 <div 
+                   onClick={() => setVipListFilter('Cliente Frequente')}
+                   className="flex flex-col gap-1 p-3.5 rounded-xl hover:bg-gray-50 border border-transparent hover:border-gray-100 cursor-pointer transition-all group"
+                 >
+                   <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-blue-400" /> Frequente</span>
+                   <div className="flex items-center justify-between">
+                     <span className="text-2xl font-bold text-[#0F172A]">{leads.filter(l => l.vipLevel === 'Cliente Frequente').length}</span>
+                     <ChevronRight className="w-4 h-4 text-gray-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                   </div>
+                 </div>
+                 <div 
+                   onClick={() => setVipListFilter('Cliente Potencial')}
+                   className="flex flex-col gap-1 p-3.5 rounded-xl hover:bg-gray-50 border border-transparent hover:border-gray-100 cursor-pointer transition-all group"
+                 >
+                   <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> Potencial</span>
+                   <div className="flex items-center justify-between">
+                     <span className="text-2xl font-bold text-[#0F172A]">{leads.filter(l => l.vipLevel === 'Cliente Potencial').length}</span>
+                     <ChevronRight className="w-4 h-4 text-gray-300 opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all" />
+                   </div>
+                 </div>
+             </div>
+          </div>
+        </div>
+      </div>
+
+      {vipListFilter && (
+        <div className="fixed inset-0 bg-[#0F172A]/40 backdrop-blur-sm flex items-center justify-center p-4 z-[99] outline-none">
+          <div className="bg-white rounded-[24px] shadow-2xl w-full max-w-2xl max-h-[85vh] flex flex-col transform relative overflow-hidden animate-fade-in border border-gray-100">
+            <div className="px-6 py-5 border-b border-gray-100 flex items-center justify-between bg-white sticky top-0 z-10">
+              <div className="flex items-center gap-4">
+                 <div className={"w-12 h-12 rounded-full flex items-center justify-center shadow-sm border " + (vipListFilter === 'VIP Gold' ? 'bg-amber-50 border-amber-100 text-amber-500' : vipListFilter === 'VIP Premium' ? 'bg-[#0F172A] border-gray-800 text-gray-300' : 'bg-gray-50 border-gray-200 text-gray-500')}>
+                    <Star className="w-6 h-6" fill="currentColor" />
+                 </div>
+                 <div>
+                   <h2 className="text-xl font-bold text-[#0F172A]">{vipListFilter}</h2>
+                   <p className="text-sm text-gray-500 font-medium">{leads.filter(l => l.vipLevel === vipListFilter).length} clientes classificados</p>
+                 </div>
+              </div>
+              <button onClick={() => { setVipListFilter(null); setSearchVip(''); }} className="w-10 h-10 flex items-center justify-center bg-transparent rounded-full text-gray-400 hover:text-[#0F172A] hover:bg-gray-100 transition-colors">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            
+            <div className="p-4 border-b border-gray-100 bg-gray-50/50">
+              <div className="relative">
+                <Search className="w-4 h-4 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
+                <input 
+                  type="text" 
+                  value={searchVip}
+                  onChange={e => setSearchVip(e.target.value)}
+                  placeholder="Buscar cliente na lista..." 
+                  className="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-blue outline-none text-sm transition-all shadow-sm"
+                />
+              </div>
+            </div>
+
+            <div className="flex-1 overflow-y-auto p-4 custom-scrollbar bg-white">
+              <div className="space-y-3">
+                {leads.filter(l => l.vipLevel === vipListFilter && l.name.toLowerCase().includes(searchVip.toLowerCase())).map((lead) => (
+                  <div 
+                    key={lead.id} 
+                    onClick={() => setSelectedLead(lead)}
+                    className="bg-white border border-gray-100 p-4 rounded-[16px] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:shadow-md hover:border-gray-200 cursor-pointer transition-all flex items-center justify-between group"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="relative shrink-0">
+                        {lead.avatarUrl && !lead.avatarUrl.includes('pravatar.cc') ? (
+                          <img src={lead.avatarUrl} alt={lead.name} className="w-12 h-12 rounded-full object-cover border border-gray-100 shadow-sm" />
+                        ) : (
+                          <div className="w-12 h-12 rounded-full bg-brand-blue/10 flex items-center justify-center text-brand-blue font-bold text-lg border border-brand-blue/20">
+                            {lead.name.charAt(0)}
+                          </div>
+                        )}
+                        <span className={"absolute -right-[2px] -bottom-[2px] w-[18px] h-[18px] rounded-full border-[2px] border-white flex items-center justify-center shadow-sm " + (vipListFilter === 'VIP Gold' ? 'bg-amber-400 text-white' : vipListFilter === 'VIP Premium' ? 'bg-gray-800 text-white' : 'bg-gray-300 text-white')}>
+                          <Star className="w-[8px] h-[8px]" fill="currentColor" />
+                        </span>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-[#0F172A] text-[15px] group-hover:text-brand-blue transition-colors flex items-center gap-2">
+                          {lead.name}
+                        </h4>
+                        <div className="flex items-center gap-3 mt-1">
+                          <p className="text-[11px] font-bold text-brand-blue bg-blue-50 px-2 py-0.5 rounded-full">
+                            LTV: R$ {lead.totalSpent.toLocaleString('pt-BR', {minimumFractionDigits: 2})}
+                          </p>
+                          <p className="text-[11px] text-gray-400 font-bold uppercase">{lead.phone || lead.email || 'Sem contato'}</p>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                      <ArrowUpRight className="w-4 h-4 text-gray-400 group-hover:text-[#0F172A]" />
+                    </div>
+                  </div>
+                ))}
+                {leads.filter(l => l.vipLevel === vipListFilter && l.name.toLowerCase().includes(searchVip.toLowerCase())).length === 0 && (
+                   <div className="text-center py-16 flex flex-col items-center">
+                     <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-3">
+                       <Search className="w-6 h-6 text-gray-300" />
+                     </div>
+                     <p className="text-gray-400 font-bold">Nenhum cliente encontrado.</p>
+                     <p className="text-gray-400 text-sm mt-1">Sua busca não retornou resultados.</p>
+                   </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {selectedLead && <LeadDetailsModal lead={selectedLead} onClose={() => setSelectedLead(null)} />}
+    </div>
+  );
+}
+
+const StatCard = ({ title, value, icon, trend, positive }: { title: string, value: string, icon: React.ReactNode, trend?: string, positive?: boolean }) => (
+  <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 group hover:shadow-md transition-shadow">
+    <div className="flex justify-between items-start mb-4">
+      <div className="w-12 h-12 rounded-xl bg-gray-50 text-brand-blue flex items-center justify-center group-hover:scale-110 transition-transform">
+        {React.cloneElement(icon as React.ReactElement, { strokeWidth: 1.5, className: 'w-6 h-6' })}
+      </div>
+      {trend && (
+        <span className={`text-xs font-bold px-2 py-1 rounded-full ${positive ? 'bg-green-50 text-green-600' : 'bg-gray-50 text-gray-500'}`}>
+          {trend}
+        </span>
+      )}
+    </div>
+    <div>
+      <p className="text-gray-400 text-sm font-bold uppercase tracking-wider mb-1">{title}</p>
+      <h3 className="text-2xl md:text-3xl font-bold tracking-tight text-[#0F172A]">{value}</h3>
+    </div>
+  </div>
+);
+

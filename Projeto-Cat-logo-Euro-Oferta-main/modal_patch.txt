@@ -1,0 +1,403 @@
+const LeadDetailsModal = ({ lead, onClose }: { lead: Lead, onClose: () => void }) => {
+  const { updateLead, updateLeadStatus, deleteLead } = useStore();
+  const [isEditing, setIsEditing] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [formData, setFormData] = useState({ phone: lead.phone, email: lead.email || '', notes: lead.notes || [], status: lead.status });
+  const [newNote, setNewNote] = useState('');
+
+  const handleDelete = () => {
+    deleteLead(lead.id);
+    onClose();
+  };
+
+  const handleSave = () => {
+    updateLead(lead.id, { phone: formData.phone, email: formData.email, notes: formData.notes });
+    if(formData.status !== lead.status) {
+       updateLeadStatus(lead.id, formData.status as LeadStatus);
+    }
+    setIsEditing(false);
+  };
+
+  const handleAddNote = () => {
+    if(!newNote.trim()) return;
+    const note = { id: Math.random().toString(36).substr(2, 9), content: newNote, date: new Date().toISOString() };
+    const updatedNotes = [note, ...(formData.notes || [])];
+    setFormData({ ...formData, notes: updatedNotes });
+    updateLead(lead.id, { notes: updatedNotes });
+    setNewNote('');
+  };
+
+  const handleDeleteNote = (id: string) => {
+    const updatedNotes = formData.notes.filter(n => n.id !== id);
+    setFormData({ ...formData, notes: updatedNotes });
+    updateLead(lead.id, { notes: updatedNotes });
+  };
+  
+  const generatePDF = (order: any, leadInfo: any) => {
+    const printWindow = window.open('', '_blank');
+    if (!printWindow) return;
+    
+    const html = `
+      <html>
+        <head>
+          <title>Pedido #${order.id.slice(0,6).toUpperCase()} - Euro Oferta</title>
+          <style>
+            @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,600;1,600&display=swap');
+            body { font-family: 'Inter', sans-serif; color: #0F172A; padding: 40px; margin: 0 auto; max-width: 800px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .header { text-align: center; margin-bottom: 40px; padding-bottom: 20px; border-bottom: 2px solid #f1f5f9; }
+            .logo { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 600; color: #015294; margin-bottom: 5px; }
+            .sub-logo { font-size: 12px; color: #64748B; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; }
+            .grid { display: flex; justify-content: space-between; margin-bottom: 40px; gap: 20px; }
+            .box { background: #f8fafc; padding: 20px; border-radius: 12px; flex: 1; border: 1px solid #e2e8f0; }
+            .box h3 { font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: #64748B; margin-top: 0; margin-bottom: 12px; }
+            .box p { margin: 5px 0; font-size: 14px; color: #334155; }
+            .box strong { font-weight: 600; color: #0F172A;}
+            table { width: 100%; border-collapse: collapse; margin-bottom: 40px; }
+            th { text-align: left; padding: 15px; background: #f8fafc; font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #64748B; border-bottom: 2px solid #e2e8f0; border-top: 1px solid #e2e8f0; }
+            td { padding: 15px; border-bottom: 1px solid #e2e8f0; font-size: 14px; vertical-align: middle; }
+            .item-name { font-weight: 700; color: #0F172A; margin-bottom: 4px; }
+            .item-meta { font-size: 12px; color: #64748B; }
+            .total-row { display: flex; justify-content: flex-end; align-items: center; padding-top: 20px; border-top: 2px solid #f1f5f9; }
+            .total-label { font-size: 14px; color: #64748B; margin-right: 20px; text-transform: uppercase; font-weight: 700; letter-spacing: 1px; }
+            .total-value { font-size: 28px; font-weight: 800; color: #015294; }
+            .footer { text-align: center; margin-top: 60px; padding-top: 20px; border-top: 1px solid #e2e8f0; font-size: 12px; color: #94a3b8; }
+            @media print {
+              body { padding: 0; }
+              .box { break-inside: avoid; }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="header">
+            <div class="logo">EuroOferta</div>
+            <div class="sub-logo">Recibo de Pedido</div>
+          </div>
+          
+          <div class="grid">
+            <div class="box">
+              <h3>Dados do Cliente</h3>
+              <p><strong>Nome:</strong> ${leadInfo.name}</p>
+              <p><strong>Telefone:</strong> ${leadInfo.phone}</p>
+              ${leadInfo.email ? `<p><strong>E-mail:</strong> ${leadInfo.email}</p>` : ''}
+              <p style="margin-top: 10px; font-size: 12px; color:#64748B;">Data do Lead: ${new Date(leadInfo.createdAt).toLocaleDateString()}</p>
+            </div>
+            <div class="box" style="text-align: right;">
+              <h3>Detalhes do Pedido</h3>
+              <p><strong>Número:</strong> #${order.id.slice(0,6).toUpperCase()}</p>
+              <p><strong>Data:</strong> ${new Date(order.createdAt).toLocaleDateString()} às ${new Date(order.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+              <p><strong>Status:</strong> ${order.status === 'sent' ? 'Enviado' : 'Processando'}</p>
+              ${order.source ? `<p><strong>Origem:</strong> ${order.source}</p>` : ''}
+            </div>
+          </div>
+
+          <table>
+            <thead>
+              <tr>
+                <th>Produto</th>
+                <th style="text-align: center;">Qtd</th>
+                <th style="text-align: right;">Preço Un.</th>
+                <th style="text-align: right;">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${order.items.map(item => `
+                <tr>
+                  <td>
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-meta">
+                      ${item.color ? `Cor: ${item.color} | ` : ''}${item.size ? `Tam: ${item.size}` : ''}
+                    </div>
+                  </td>
+                  <td style="text-align: center; font-weight: 600;">${item.qty || 1}</td>
+                  <td style="text-align: right;">R$ ${Number(String(item.price).replace(/\\./g, "").replace(",", ".")).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                  <td style="text-align: right; font-weight: 700;">R$ ${(Number(String(item.price).replace(/\\./g, "").replace(",", ".")) * (item.qty || 1)).toLocaleString('pt-BR', {minimumFractionDigits: 2})}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+
+          <div class="total-row">
+            <div class="total-label">Total do Pedido</div>
+            <div class="total-value">R$ ${order.total.toLocaleString('pt-BR', { minimumFractionDigits: 2})}</div>
+          </div>
+
+          <div class="footer">
+            Euro Oferta - Este documento é um resumo do pedido realizado via catálogo digital.
+          </div>
+          
+          <script>
+            window.onload = function() {
+              setTimeout(() => {
+                window.print();
+              }, 500);
+            }
+          </script>
+        </body>
+      </html>
+    `;
+    
+    printWindow.document.open();
+    printWindow.document.write(html);
+    printWindow.document.close();
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm animate-fade-in px-4 py-6 md:p-8">
+      <div className="bg-white rounded-3xl w-full max-w-5xl max-h-full flex flex-col shadow-2xl scale-in-center overflow-hidden border border-gray-100">
+        
+        {/* Header Superior */}
+        <div className="px-6 py-4 md:px-8 border-b border-gray-100 flex items-center justify-between bg-gray-50/50 sticky top-0 z-20">
+          <div className="flex items-center gap-4">
+             <div className="w-12 h-12 rounded-full overflow-hidden shrink-0 border-2 border-white shadow-sm">
+                {lead.avatarUrl ? <img src={lead.avatarUrl} alt={lead.name} className="w-full h-full object-cover" /> : <div className="w-full h-full bg-brand-blue flex items-center justify-center text-white font-bold text-lg">{lead.name.charAt(0)}</div>}
+             </div>
+             <div>
+               <h2 className="text-xl font-bold text-[#0F172A]">{lead.name}</h2>
+               <div className="flex items-center gap-3 text-sm mt-0.5">
+                 <span className="text-gray-500 flex items-center gap-1.5"><Clock className="w-3.5 h-3.5" /> Registrado em {new Date(lead.createdAt).toLocaleDateString()}</span>
+               </div>
+             </div>
+          </div>
+          <div className="flex items-center gap-3">
+            {!isEditing && (
+              <>
+                <button onClick={() => setIsDeleting(true)} className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors hidden md:block">
+                  <Trash2 className="w-5 h-5" />
+                </button>
+                <button onClick={() => setIsEditing(true)} className="px-4 py-2 bg-gray-100 text-[#0F172A] font-bold text-sm rounded-lg hover:bg-gray-200 transition-colors hidden md:block">Editar</button>
+              </>
+            )}
+            <button onClick={onClose} className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors bg-white shadow-sm border border-gray-100"><X className="w-5 h-5" /></button>
+          </div>
+        </div>
+
+        {/* Delete Confirmation */}
+        {isDeleting && (
+          <div className="absolute inset-0 bg-white/90 backdrop-blur-sm z-30 flex items-center justify-center p-6">
+            <div className="bg-white p-6 rounded-2xl shadow-xl max-w-sm w-full border border-gray-100 text-center">
+               <div className="w-16 h-16 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4"><Trash2 className="w-8 h-8" /></div>
+               <h3 className="text-lg font-bold text-[#0F172A] mb-2">Excluir este Lead?</h3>
+               <p className="text-sm text-gray-500 mb-6">Esta ação é permanente. Todos os dados, histórico de pedidos e anotações deste cliente serão apagados.</p>
+               <div className="flex gap-3">
+                 <button onClick={() => setIsDeleting(false)} className="flex-1 py-2.5 bg-gray-100 text-gray-600 font-bold rounded-xl hover:bg-gray-200 transition-colors">Cancelar</button>
+                 <button onClick={handleDelete} className="flex-1 py-2.5 bg-red-500 text-white font-bold rounded-xl hover:bg-red-600 transition-colors">Excluir</button>
+               </div>
+            </div>
+          </div>
+        )}
+
+        <div className="flex-1 overflow-y-auto p-6 md:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 hide-scrollbar">
+          {/* Informações Pessoais (Coluna Esquerda) */}
+          <div className="lg:col-span-4 space-y-6">
+            
+            <div className="space-y-4">
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest">Informações de Contato</h3>
+              {isEditing ? (
+                 <div className="space-y-3">
+                   <input type="text" value={formData.phone} onChange={e => setFormData({...formData, phone: e.target.value})} className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-blue outline-none" placeholder="Telefone" />
+                   <input type="email" value={formData.email} onChange={e => setFormData({...formData, email: e.target.value})} className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-blue outline-none" placeholder="E-mail" />
+                 </div>
+              ) : (
+                <div className="space-y-3">
+                  <a href={`https://wa.me/55${formData.phone.replace(/\\D/g, '')}?text=${encodeURIComponent(\`Olá ${lead.name}, aqui é da Euro Oferta! Agradecemos o seu pedido. Um de nossos consultores já vai dar o atendimento para finalizar o seu pedido.\`)}`} target="_blank" rel="noreferrer" className="flex items-center gap-3 text-sm text-[#0F172A] hover:text-green-600 transition-colors group p-3 bg-gray-50 rounded-xl border border-gray-100">
+                    <div className="w-8 h-8 rounded-full bg-green-100 text-green-600 flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform"><MessageCircle className="w-4 h-4" /></div>
+                    <span className="font-medium">{formData.phone}</span>
+                  </a>
+                  {formData.email && (
+                    <a href={`mailto:${formData.email}`} className="flex items-center gap-3 text-sm text-[#0F172A] hover:text-brand-blue transition-colors group p-3 bg-gray-50 rounded-xl border border-gray-100" style={{wordBreak: "break-all"}}>
+                      <div className="w-8 h-8 rounded-full bg-blue-100 text-brand-blue flex items-center justify-center shrink-0 group-hover:scale-110 transition-transform"><Mail className="w-4 h-4" /></div>
+                      <span className="font-medium">{formData.email}</span>
+                    </a>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-4">
+               <h3 className="text-xs font-bold text-gray-400 uppercase tracking-widest">Status do Lead</h3>
+               {isEditing ? (
+                  <select value={formData.status} onChange={e => setFormData({...formData, status: e.target.value as LeadStatus})} className="w-full px-3 py-2 text-sm border border-gray-200 rounded-xl focus:ring-2 focus:ring-brand-blue outline-none">
+                    <option value="Novo Lead">Novo Lead</option>
+                    <option value="Em Contato">Em Contato</option>
+                    <option value="Aguardando Resposta">Aguardando Resposta</option>
+                    <option value="Proposta Enviada">Proposta Enviada</option>
+                    <option value="Venda Ganha">Venda Ganha</option>
+                    <option value="Venda Perdida">Venda Perdida</option>
+                    <option value="Cancelado">Cancelado</option>
+                  </select>
+               ) : (
+                 <div className="inline-flex">
+                   <span className={`px-3 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider
+                        ${lead.status === 'Novo Lead' ? 'bg-blue-50 text-blue-600' :
+                        lead.status === 'Em Contato' ? 'bg-purple-50 text-purple-600' :
+                        lead.status === 'Aguardando Resposta' ? 'bg-yellow-50 text-yellow-600' :
+                        lead.status === 'Proposta Enviada' ? 'bg-orange-50 text-orange-600' :
+                        lead.status === 'Venda Ganha' ? 'bg-green-50 text-green-600' :
+                        'bg-red-50 text-red-600'}
+                    `}>
+                     {lead.status}
+                   </span>
+                 </div>
+               )}
+            </div>
+
+            <div className="pt-2 border-t border-gray-100 flex gap-4">
+              <div className="flex-1 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                <p className="text-[10px] uppercase font-bold text-gray-400 tracking-widest mb-1">Total Gasto</p>
+                <p className="text-xl font-bold text-brand-blue leading-none">R$ {lead.totalSpent.toLocaleString('pt-BR', {minimumFractionDigits: 2})}</p>
+              </div>
+            </div>
+
+            {isEditing && (
+              <div className="pt-4 flex gap-2">
+                 <button onClick={() => setIsEditing(false)} className="flex-1 py-2 bg-gray-100 text-gray-600 font-bold rounded-lg text-sm transition-colors">Cancelar</button>
+                 <button onClick={handleSave} className="flex-1 py-2 bg-brand-blue text-white font-bold rounded-lg text-sm">Salvar Alterações</button>
+              </div>
+            )}
+            
+            {/* Actions mobile */}
+            <div className="md:hidden flex gap-2 pt-4 border-t border-gray-100">
+              <button onClick={() => setIsEditing(true)} className="flex-1 py-2 bg-gray-100 text-[#0F172A] font-bold text-sm rounded-lg hover:bg-gray-200">Editar</button>
+              <button onClick={() => setIsDeleting(true)} className="p-2 bg-red-50 text-red-500 rounded-lg"><Trash2 className="w-5 h-5"/></button>
+            </div>
+
+          </div>
+
+          {/* Histórico e Notas (Coluna Direita) */}
+          <div className="lg:col-span-8 flex flex-col gap-8">
+            
+            {/* Notes Section */}
+            <section className="space-y-4">
+              <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+                <h3 className="text-[13px] font-bold text-[#0F172A] uppercase tracking-[0.1em] flex items-center gap-2">
+                  <MessageCircle className="w-4 h-4 text-brand-blue" /> Observações e Notas
+                </h3>
+                <span className="text-xs text-gray-400 font-medium">{formData.notes?.length || 0} anotações</span>
+              </div>
+              
+              <div className="flex gap-2">
+                <input type="text" value={newNote} onChange={e => setNewNote(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleAddNote()} placeholder="Adicione uma nota importante sobre o cliente..." className="flex-1 px-4 py-3 bg-white border border-gray-200 rounded-xl focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-blue/50 focus:border-brand-blue text-sm transition-all shadow-sm" />
+                <button onClick={handleAddNote} className="px-5 py-3 bg-[#0F172A] text-white rounded-xl font-bold text-[13px] hover:bg-black transition-colors shadow-sm shadow-black/20">Adicionar</button>
+              </div>
+
+              <div className="space-y-3 mt-4 max-h-[250px] overflow-y-auto pr-2 hide-scrollbar">
+                {formData.notes && formData.notes.length > 0 ? formData.notes.map(note => (
+                  <div key={note.id} className="p-4 bg-[#f8fafc] rounded-xl border border-gray-100 relative group transition-all hover:shadow-md hover:border-gray-200 hover:-translate-y-0.5">
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="text-[10px] text-brand-blue font-bold tracking-wider uppercase bg-brand-blue/5 px-2 py-0.5 rounded-md">{new Date(note.date).toLocaleDateString()} às {new Date(note.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                      <button onClick={() => handleDeleteNote(note.id)} className="text-gray-300 hover:text-red-500 hover:bg-red-50 p-1.5 rounded-md opacity-0 group-hover:opacity-100 transition-all absolute top-2 right-2">
+                        <Trash2 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                    <p className="text-[13px] text-[#334155] leading-relaxed mb-0">{note.content}</p>
+                  </div>
+                )) : (
+                  <div className="text-center py-6 bg-gray-50/50 rounded-xl border border-dashed border-gray-200">
+                     <p className="text-sm text-gray-400 italic">Nenhuma nota adicionada.</p>
+                  </div>
+                )}
+              </div>
+            </section>
+
+            {/* Orders History */}
+            <section className="space-y-6 flex-1 flex flex-col">
+              <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+                <h3 className="text-[13px] font-bold text-[#0F172A] uppercase tracking-[0.1em] flex items-center gap-2">
+                  <Package className="w-4 h-4 text-brand-blue" /> Histórico de Pedidos
+                </h3>
+                <span className="text-xs text-[#00b873] font-bold bg-[#00b873]/10 px-2 py-1 rounded-md">{lead.orders?.length || 0} Pedidos</span>
+              </div>
+              
+              {(!lead.orders || lead.orders.length === 0) ? (
+                <div className="text-center py-12 text-gray-500 bg-gray-50/50 rounded-2xl border border-dashed border-gray-200 flex-1 flex items-center justify-center flex-col">
+                  <ShoppingBag className="w-10 h-10 text-gray-300 mx-auto mb-3 opacity-50" />
+                  <p className="font-medium text-[#0F172A]">Nenhum pedido registrado</p>
+                  <p className="text-xs text-gray-400 mt-1">Os pedidos feitos pelo catálogo aparecerão aqui.</p>
+                </div>
+              ) : (
+                <div className="space-y-4 pb-10">
+                  {lead.orders.sort((a,b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).map((order, idx) => (
+                    <div key={order.id} className="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-all group">
+                       {/* Order Header */}
+                       <div className="bg-[#f8fafc] px-4 md:px-5 py-4 border-b border-gray-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-brand-blue/10 flex items-center justify-center shrink-0">
+                              <ShoppingBag className="w-4 h-4 text-brand-blue" />
+                            </div>
+                            <div>
+                              <div className="flex flex-wrap items-center gap-2">
+                                <h4 className="text-sm font-bold text-[#0F172A]">Pedido #{order.id.slice(0,6).toUpperCase()}</h4>
+                                <span className="text-[10px] uppercase font-bold tracking-wider text-[#00b873] bg-[#00b873]/10 px-2 py-0.5 rounded-full">Finalizado</span>
+                              </div>
+                              <p className="text-[11px] font-medium text-gray-500 mt-0.5">{new Date(order.createdAt).toLocaleDateString()} às {new Date(order.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-6 w-full sm:w-auto">
+                            <div className="text-left sm:text-right">
+                              <p className="text-[10px] text-gray-400 font-medium uppercase tracking-wider mb-0.5">Valor Total</p>
+                              <p className="text-base font-bold text-brand-blue">R$ {order.total.toLocaleString('pt-BR', { minimumFractionDigits: 2})}</p>
+                            </div>
+                            <button 
+                              onClick={() => generatePDF(order, lead)}
+                              className="flex items-center gap-1.5 px-3 py-2 bg-white border border-gray-200 rounded-lg text-xs font-bold text-gray-600 hover:text-brand-blue hover:border-brand-blue hover:bg-brand-blue/5 transition-all shadow-sm cursor-pointer shrink-0"
+                              title="Gerar PDF do Pedido"
+                            >
+                              <Printer className="w-3.5 h-3.5" />
+                              <span className="hidden sm:inline uppercase">Baixar PDF</span>
+                              <span className="sm:hidden uppercase">PDF</span>
+                            </button>
+                          </div>
+                       </div>
+
+                       {/* Order Items List */}
+                       <div className="p-4 md:p-5">
+                         <h5 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Itens do Pedido</h5>
+                         <div className="space-y-3">
+                           {order.items.map((item, i) => {
+                              const pValue = typeof item.price === 'string' ? parseFloat(item.price.replace(/\./g, '').replace(',', '.')) : (item.price || 0);
+                              const iTotal = pValue * (item.qty || 1);
+                              
+                              return (
+                               <div key={i} className="flex gap-4 p-3 rounded-xl hover:bg-gray-50 transition-colors border border-transparent hover:border-gray-100">
+                                 <div className="w-16 h-16 rounded-xl border border-gray-200 bg-white shadow-sm flex items-center justify-center overflow-hidden shrink-0 p-2">
+                                   {item.image ? (
+                                      <img src={item.image} className="w-full h-full object-contain" alt={item.name} />
+                                   ) : (
+                                      <Package className="w-6 h-6 text-gray-300" />
+                                   )}
+                                 </div>
+                                 <div className="flex-1 min-w-0 flex flex-col justify-center">
+                                   <div className="flex flex-col sm:flex-row justify-between sm:items-start gap-1 sm:gap-2">
+                                     <p className="text-[13px] font-bold text-[#0F172A] leading-tight flex-1">{item.name}</p>
+                                     <p className="text-[13px] font-bold text-[#0F172A] whitespace-nowrap">R$ {iTotal.toLocaleString('pt-BR', {minimumFractionDigits:2})}</p>
+                                   </div>
+                                   
+                                   <div className="flex flex-wrap gap-2 text-[11px] text-gray-500 font-medium mt-2">
+                                     <span className="bg-white border border-gray-200 px-2 py-0.5 rounded-md shadow-sm">Qtd: {item.qty || 1}</span>
+                                     {item.color && (
+                                       <span className="bg-white border border-gray-200 px-2 py-0.5 rounded-md shadow-sm flex items-center gap-1.5">
+                                         <div className="w-2.5 h-2.5 rounded-full border border-gray-300 shadow-inner" style={{backgroundColor: item.color === 'Preto' ? '#000' : (item.color === 'Branco' ? '#fff' : (item.color === 'Areia' ? '#e5e5f7' : (item.color === 'Gelo' ? '#e2e8f0' : item.color)))}}/> 
+                                         {item.color}
+                                       </span>
+                                     )}
+                                     {item.size && <span className="bg-white border border-gray-200 px-2 py-0.5 rounded-md shadow-sm">Tam: {item.size}</span>}
+                                   </div>
+                                   <p className="text-[10px] text-gray-400 mt-1.5 hidden sm:block">R$ {pValue.toLocaleString('pt-BR', {minimumFractionDigits: 2})} / unidade</p>
+                                 </div>
+                               </div>
+                             )
+                           })}
+                         </div>
+                       </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
