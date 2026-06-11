@@ -111,7 +111,7 @@ const categories = [
 ];
 
 const storeSettings = {
-  get whatsapp() { return localStorage.getItem('sono_store_phone') || '5565981183473'; },
+  get whatsapp() { return localStorage.getItem('sono_store_phone') || '5565992549622'; },
   get name() { return localStorage.getItem('sono_store_name') || 'Sono & Cia'; }
 };
 
@@ -1446,7 +1446,7 @@ export default function App() {
             >
               <button 
                 onClick={() => openInstitutionalPage('central-ajuda')}
-                className="hover:text-white transition-opacity flex items-center gap-1.5 cursor-pointer bg-transparent border-none outline-none font-bold text-[10px] tracking-widest uppercase text-white/90"
+                className="hover:text-white transition-opacity flex items-center gap-1.5 cursor-pointer bg-transparent border-none outline-none font-semibold text-[10px] tracking-widest uppercase text-white/90"
               >
                 Precisa de Ajuda? 
                 <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${isHelpMenuOpen ? 'rotate-180 text-amber-400' : ''}`} />
@@ -1454,7 +1454,7 @@ export default function App() {
             </div>
             <button 
               onClick={() => openInstitutionalPage('endereco')}
-              className="hover:text-white transition-opacity cursor-pointer bg-transparent border-none outline-none font-bold text-[10px] tracking-widest uppercase text-white/90 py-1"
+              className="hover:text-white transition-opacity cursor-pointer bg-transparent border-none outline-none font-semibold text-[10px] tracking-widest uppercase text-white/90 py-1"
             >
               Nossas Lojas
             </button>
@@ -1606,8 +1606,8 @@ export default function App() {
                     <MessageCircle className="w-4 h-4" />
                   </div>
                   <div>
-                    <p className="text-[13px] font-bold text-gray-900 group-hover:text-brand-blue transition-colors">Fale Conosco</p>
-                    <p className="text-[10px] text-gray-400 font-semibold">WhatsApp, Chat e E-mail</p>
+                    <p className="text-[13px] font-semibold text-gray-800 group-hover:text-brand-blue transition-colors">Fale Conosco</p>
+                    <p className="text-[10px] text-gray-400 font-medium">WhatsApp, Chat e E-mail</p>
                   </div>
                 </button>
 
@@ -1619,8 +1619,8 @@ export default function App() {
                     <MapPin className="w-4 h-4" />
                   </div>
                   <div>
-                    <p className="text-[13px] font-bold text-gray-900 group-hover:text-brand-blue transition-colors">Nossos Endereços</p>
-                    <p className="text-[10px] text-gray-400 font-semibold">Nossos showrooms físicos</p>
+                    <p className="text-[13px] font-semibold text-gray-800 group-hover:text-brand-blue transition-colors">Nossos Endereços</p>
+                    <p className="text-[10px] text-gray-400 font-medium">Nossos showrooms físicos</p>
                   </div>
                 </button>
 
@@ -1632,8 +1632,8 @@ export default function App() {
                     <HeartHandshake className="w-4 h-4" />
                   </div>
                   <div>
-                    <p className="text-[13px] font-bold text-gray-900 group-hover:text-brand-blue transition-colors">Sobre a Marca</p>
-                    <p className="text-[10px] text-gray-400 font-semibold">Nossos 25 anos de história</p>
+                    <p className="text-[13px] font-semibold text-gray-800 group-hover:text-brand-blue transition-colors">Sobre a Marca</p>
+                    <p className="text-[10px] text-gray-400 font-medium">Nossos 25 anos de história</p>
                   </div>
                 </button>
 
@@ -1645,8 +1645,8 @@ export default function App() {
                     <Sparkles className="w-4 h-4" />
                   </div>
                   <div>
-                    <p className="text-[13px] font-bold text-gray-900 group-hover:text-brand-blue transition-colors">Central de Ajuda</p>
-                    <p className="text-[10px] text-gray-400 font-semibold">Perguntas frequentes e FAQs</p>
+                    <p className="text-[13px] font-semibold text-gray-800 group-hover:text-brand-blue transition-colors">Central de Ajuda</p>
+                    <p className="text-[10px] text-gray-400 font-medium">Perguntas frequentes e FAQs</p>
                   </div>
                 </button>
 
@@ -1658,8 +1658,8 @@ export default function App() {
                     <ShieldCheck className="w-4 h-4" />
                   </div>
                   <div>
-                    <p className="text-[13px] font-bold text-gray-900 group-hover:text-brand-blue transition-colors">Privacidade</p>
-                    <p className="text-[10px] text-gray-400 font-semibold">Segurança de dados LGPD</p>
+                    <p className="text-[13px] font-semibold text-gray-800 group-hover:text-brand-blue transition-colors">Privacidade</p>
+                    <p className="text-[10px] text-gray-400 font-medium">Segurança de dados LGPD</p>
                   </div>
                 </button>
 
@@ -1671,8 +1671,8 @@ export default function App() {
                     <FileText className="w-4 h-4" />
                   </div>
                   <div>
-                    <p className="text-[13px] font-bold text-gray-900 group-hover:text-brand-blue transition-colors">Termos de Uso</p>
-                    <p className="text-[10px] text-gray-400 font-semibold">Nossos contratos comerciais</p>
+                    <p className="text-[13px] font-semibold text-gray-800 group-hover:text-brand-blue transition-colors">Termos de Uso</p>
+                    <p className="text-[10px] text-gray-400 font-medium">Nossos contratos comerciais</p>
                   </div>
                 </button>
               </div>
@@ -1698,8 +1698,8 @@ export default function App() {
                     <Box className="w-4 h-4" />
                   </div>
                   <div>
-                    <p className="text-[13px] font-bold text-gray-900 group-hover:text-brand-blue transition-colors leading-tight">Móveis de Madeira</p>
-                    <p className="text-[10px] text-gray-400 font-semibold leading-tight">Madeira maciça sustentável</p>
+                    <p className="text-[13px] font-semibold text-gray-800 group-hover:text-brand-blue transition-colors leading-tight">Móveis de Madeira</p>
+                    <p className="text-[10px] text-gray-400 font-medium leading-tight">Madeira maciça sustentável</p>
                   </div>
                 </button>
 
@@ -1711,8 +1711,8 @@ export default function App() {
                     <Armchair className="w-4 h-4" />
                   </div>
                   <div>
-                    <p className="text-[13px] font-bold text-gray-900 group-hover:text-brand-blue transition-colors">Estofados</p>
-                    <p className="text-[10px] text-gray-400 font-semibold leading-tight">Sofás premium e poltronas</p>
+                    <p className="text-[13px] font-semibold text-gray-800 group-hover:text-brand-blue transition-colors">Estofados</p>
+                    <p className="text-[10px] text-gray-400 font-medium leading-tight">Sofás premium e poltronas</p>
                   </div>
                 </button>
 
@@ -1724,8 +1724,8 @@ export default function App() {
                     <BedDouble className="w-4 h-4" />
                   </div>
                   <div>
-                    <p className="text-[13px] font-bold text-gray-900 group-hover:text-brand-blue transition-colors">Camas</p>
-                    <p className="text-[10px] text-gray-400 font-semibold leading-tight">Estruturas e cabeceiras</p>
+                    <p className="text-[13px] font-semibold text-gray-800 group-hover:text-brand-blue transition-colors">Camas</p>
+                    <p className="text-[10px] text-gray-400 font-medium leading-tight">Estruturas e cabeceiras</p>
                   </div>
                 </button>
 
@@ -1737,8 +1737,8 @@ export default function App() {
                     <Cloud className="w-4 h-4" />
                   </div>
                   <div>
-                    <p className="text-[13px] font-bold text-gray-900 group-hover:text-brand-blue transition-colors">Travesseiros</p>
-                    <p className="text-[10px] text-gray-400 font-semibold leading-tight">Látex e espuma de memória</p>
+                    <p className="text-[13px] font-semibold text-gray-800 group-hover:text-brand-blue transition-colors">Travesseiros</p>
+                    <p className="text-[10px] text-gray-400 font-medium leading-tight">Látex e espuma de memória</p>
                   </div>
                 </button>
               </div>
@@ -1759,7 +1759,7 @@ export default function App() {
                 </p>
               </div>
               <a 
-                href="https://wa.me/5565981183473"
+                href="https://wa.me/5565992549622"
                 target="_blank"
                 rel="noreferrer"
                 className="w-full md:w-auto lg:w-full flex items-center justify-between bg-brand-blue hover:bg-brand-blue-hover transition-all text-white font-bold text-[11px] uppercase tracking-wider px-4 py-3 lg:py-2.5 rounded-xl hover:shadow-lg shadow-brand-blue/10 text-center cursor-pointer group shrink-0"
@@ -2830,7 +2830,7 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
 
 *🧾 TOTAL DO PEDIDO:* R$ ${getCartTotal().toLocaleString('pt-BR', { minimumFractionDigits: 2 })}`;
               
-              const phone = localStorage.getItem('sono_store_phone') || '5565981183473';
+              const phone = localStorage.getItem('sono_store_phone') || '5565992549622';
               window.open(`https://wa.me/${phone}?text=${encodeURIComponent(text)}`, '_blank');
               
               setShowLeadCapture(false);
@@ -3152,7 +3152,7 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <div className="w-1.5 h-3.5 bg-brand-blue rounded-full" />
-                  <h4 className="text-[11px] uppercase tracking-wider font-extrabold text-gray-400">Nossos Departamentos</h4>
+                  <h4 className="text-[11px] uppercase tracking-wider font-semibold text-gray-500 tracking-[0.12em]">Nossos Departamentos</h4>
                 </div>
                 
                 <div className="grid grid-cols-1 gap-2">
@@ -3164,7 +3164,7 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
                       <Box className="w-5 h-5" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-extrabold text-[#0F172A]">Móveis de Madeira</p>
+                      <p className="text-xs font-semibold text-[#0F172A]">Móveis de Madeira</p>
                       <p className="text-[10px] text-gray-400 font-medium truncate">Peças maciças e design sustentável</p>
                     </div>
                     <ChevronRight className="w-4 h-4 text-gray-300" />
@@ -3178,7 +3178,7 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
                       <Armchair className="w-5 h-5" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-extrabold text-[#0F172A]">Estofados</p>
+                      <p className="text-xs font-semibold text-[#0F172A]">Estofados</p>
                       <p className="text-[10px] text-gray-400 font-medium truncate">Sofás sob medida e alta sofisticação</p>
                     </div>
                     <ChevronRight className="w-4 h-4 text-gray-300" />
@@ -3192,7 +3192,7 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
                       <BedDouble className="w-5 h-5" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-extrabold text-[#0F172A]">Camas & Cabeceiras</p>
+                      <p className="text-xs font-semibold text-[#0F172A]">Camas & Cabeceiras</p>
                       <p className="text-[10px] text-gray-400 font-medium truncate">Sistemas ergonômicos e acabamentos premium</p>
                     </div>
                     <ChevronRight className="w-4 h-4 text-gray-300" />
@@ -3206,7 +3206,7 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
                       <Cloud className="w-5 h-5" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-extrabold text-[#0F172A]">Travesseiros Especiais</p>
+                      <p className="text-xs font-semibold text-[#0F172A]">Travesseiros Especiais</p>
                       <p className="text-[10px] text-gray-400 font-medium truncate">Látex importado e viscoelástico inteligente</p>
                     </div>
                     <ChevronRight className="w-4 h-4 text-gray-300" />
@@ -3220,7 +3220,7 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
                       <Sofa className="w-5 h-5" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-extrabold text-[#0F172A]">Colchões Anatômicos</p>
+                      <p className="text-xs font-semibold text-[#0F172A]">Colchões Anatômicos</p>
                       <p className="text-[10px] text-gray-400 font-medium truncate">Ortopedia clínica e molas ensacadas premium</p>
                     </div>
                     <ChevronRight className="w-4 h-4 text-gray-300" />
@@ -3232,7 +3232,7 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
                   <div className="w-1.5 h-3.5 bg-brand-blue rounded-full" />
-                  <h4 className="text-[11px] uppercase tracking-wider font-extrabold text-gray-400">Atendimento & Suporte</h4>
+                  <h4 className="text-[11px] uppercase tracking-wider font-semibold text-gray-500 tracking-[0.12em]">Atendimento & Suporte</h4>
                 </div>
 
                 <div className="grid grid-cols-2 gap-2">
@@ -3390,36 +3390,36 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
       {/* Footer */}
       <footer className="bg-brand-blue py-16 md:py-20 text-white relative z-20">
         <div className="max-w-[1400px] w-full mx-auto px-5 sm:px-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-10 xl:gap-14 mb-16 items-start">
             {/* Brand Column */}
             <div className="flex flex-col items-start text-left">
-              <div className="mb-4">
-                <Logo inverse className="h-20 sm:h-24 md:h-28 w-auto transform origin-left hover:scale-[1.03] transition-transform duration-300" />
+              <div className="flex items-center h-10 mb-8 pl-1 sm:pl-2">
+                <Logo inverse className="h-10 w-auto transform origin-left scale-[3.4] sm:scale-[3.6] hover:scale-[3.7] hover:opacity-95 transition-all duration-300" />
               </div>
-              <p className="text-white/70 text-sm font-medium leading-relaxed mb-8 max-w-[280px]">
+              <p className="text-white/80 text-[13.5px] font-medium leading-relaxed mt-4 mb-8 max-w-[320px]">
                 A excelência em artigos e tecnologias para o sono, curadoria exclusiva de colchões e enxovais para elevar o seu descanso. Trazemos o luxo do repouso rejuvenescedor para o seu dia a dia.
               </p>
-              <div className="flex items-center gap-4">
-                <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
-                  <Instagram className="w-5 h-5 text-white/80" />
+              <div className="flex items-center gap-3">
+                <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center border border-white/10 hover:border-white/20 hover:scale-110 transition-all duration-300 shadow-sm" aria-label="Instagram">
+                  <Instagram className="w-4.5 h-4.5 text-white/90" />
                 </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
-                  <Facebook className="w-5 h-5 text-white/80" />
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center border border-white/10 hover:border-white/20 hover:scale-110 transition-all duration-300 shadow-sm" aria-label="Facebook">
+                  <Facebook className="w-4.5 h-4.5 text-white/90" />
                 </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-white/20 transition-colors">
-                  <Smartphone className="w-5 h-5 text-white/80" />
+                <a href="https://wa.me/5565992549622" target="_blank" rel="noopener noreferrer" className="w-10 h-10 rounded-full bg-white/5 hover:bg-white/15 flex items-center justify-center border border-white/10 hover:border-white/20 hover:scale-110 transition-all duration-300 shadow-sm" aria-label="WhatsApp">
+                  <Smartphone className="w-4.5 h-4.5 text-white/90" />
                 </a>
               </div>
             </div>
 
             {/* Links 1 */}
             <div className="flex flex-col">
-              <h3 className="font-bold text-[13px] tracking-[0.15em] mb-8 text-white uppercase">Departamentos</h3>
+              <h3 className="font-bold text-[12px] tracking-[0.16em] mb-8 text-white uppercase border-b border-white/10 pb-2 w-full md:w-3/4">Departamentos</h3>
               <ul className="flex flex-col gap-4 text-left">
                 <li>
                   <button 
                     onClick={() => handleSelectCategory("Móveis de\nMadeira")} 
-                    className="text-white/70 font-semibold hover:text-white transition-colors text-[14px] cursor-pointer bg-transparent border-none p-0 outline-none text-left"
+                    className="text-white/80 font-medium hover:text-white hover:translate-x-1.5 transition-all duration-300 text-[13.5px] tracking-wide cursor-pointer bg-transparent border-none p-0 outline-none text-left inline-block transform"
                   >
                     Móveis de Madeira
                   </button>
@@ -3427,7 +3427,7 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
                 <li>
                   <button 
                     onClick={() => handleSelectCategory("Estofados")} 
-                    className="text-white/70 font-semibold hover:text-white transition-colors text-[14px] cursor-pointer bg-transparent border-none p-0 outline-none text-left"
+                    className="text-white/80 font-medium hover:text-white hover:translate-x-1.5 transition-all duration-300 text-[13.5px] tracking-wide cursor-pointer bg-transparent border-none p-0 outline-none text-left inline-block transform"
                   >
                     Estofados
                   </button>
@@ -3435,7 +3435,7 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
                 <li>
                   <button 
                     onClick={() => handleSelectCategory("Camas")} 
-                    className="text-white/70 font-semibold hover:text-white transition-colors text-[14px] cursor-pointer bg-transparent border-none p-0 outline-none text-left"
+                    className="text-white/80 font-medium hover:text-white hover:translate-x-1.5 transition-all duration-300 text-[13.5px] tracking-wide cursor-pointer bg-transparent border-none p-0 outline-none text-left inline-block transform"
                   >
                     Camas
                   </button>
@@ -3443,7 +3443,7 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
                 <li>
                   <button 
                     onClick={() => handleSelectCategory("Travesseiros")} 
-                    className="text-white/70 font-semibold hover:text-white transition-colors text-[14px] cursor-pointer bg-transparent border-none p-0 outline-none text-left"
+                    className="text-white/80 font-medium hover:text-white hover:translate-x-1.5 transition-all duration-300 text-[13.5px] tracking-wide cursor-pointer bg-transparent border-none p-0 outline-none text-left inline-block transform"
                   >
                     Travesseiros
                   </button>
@@ -3453,12 +3453,12 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
 
             {/* Links 2 */}
             <div className="flex flex-col">
-              <h3 className="font-bold text-[13px] tracking-[0.15em] mb-8 text-white uppercase">Atendimento</h3>
+              <h3 className="font-bold text-[12px] tracking-[0.16em] mb-8 text-white uppercase border-b border-white/10 pb-2 w-full md:w-3/4">Atendimento</h3>
               <ul className="flex flex-col gap-4 text-left">
                 <li>
                   <button 
                     onClick={() => openInstitutionalPage('fale-conosco')} 
-                    className="text-white/70 font-semibold hover:text-white transition-colors text-[14px] cursor-pointer bg-transparent border-none p-0 outline-none text-left"
+                    className="text-white/80 font-medium hover:text-white hover:translate-x-1.5 transition-all duration-300 text-[13.5px] tracking-wide cursor-pointer bg-transparent border-none p-0 outline-none text-left inline-block transform"
                   >
                     Fale Conosco
                   </button>
@@ -3466,7 +3466,7 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
                 <li>
                   <button 
                     onClick={() => openInstitutionalPage('endereco')} 
-                    className="text-white/70 font-semibold hover:text-white transition-colors text-[14px] cursor-pointer bg-transparent border-none p-0 outline-none text-left"
+                    className="text-white/80 font-medium hover:text-white hover:translate-x-1.5 transition-all duration-300 text-[13.5px] tracking-wide cursor-pointer bg-transparent border-none p-0 outline-none text-left inline-block transform"
                   >
                     Endereço
                   </button>
@@ -3474,7 +3474,7 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
                 <li>
                   <button 
                     onClick={() => openInstitutionalPage('sobre')} 
-                    className="text-white/70 font-semibold hover:text-white transition-colors text-[14px] cursor-pointer bg-transparent border-none p-0 outline-none text-left"
+                    className="text-white/80 font-medium hover:text-white hover:translate-x-1.5 transition-all duration-300 text-[13.5px] tracking-wide cursor-pointer bg-transparent border-none p-0 outline-none text-left inline-block transform"
                   >
                     Sobre
                   </button>
@@ -3482,7 +3482,7 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
                 <li>
                   <button 
                     onClick={() => openInstitutionalPage('central-ajuda')} 
-                    className="text-white/70 font-semibold hover:text-white transition-colors text-[14px] cursor-pointer bg-transparent border-none p-0 outline-none text-left"
+                    className="text-white/80 font-medium hover:text-white hover:translate-x-1.5 transition-all duration-300 text-[13.5px] tracking-wide cursor-pointer bg-transparent border-none p-0 outline-none text-left inline-block transform"
                   >
                     Central de Ajuda
                   </button>
@@ -3490,7 +3490,7 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
                 <li>
                   <button 
                     onClick={() => openInstitutionalPage('politica')} 
-                    className="text-white/70 font-semibold hover:text-white transition-colors text-[14px] cursor-pointer bg-transparent border-none p-0 outline-none text-left"
+                    className="text-white/80 font-medium hover:text-white hover:translate-x-1.5 transition-all duration-300 text-[13.5px] tracking-wide cursor-pointer bg-transparent border-none p-0 outline-none text-left inline-block transform"
                   >
                     Política de Privacidade
                   </button>
@@ -3498,7 +3498,7 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
                 <li>
                   <button 
                     onClick={() => openInstitutionalPage('termos')} 
-                    className="text-white/70 font-semibold hover:text-white transition-colors text-[14px] cursor-pointer bg-transparent border-none p-0 outline-none text-left"
+                    className="text-white/80 font-medium hover:text-white hover:translate-x-1.5 transition-all duration-300 text-[13.5px] tracking-wide cursor-pointer bg-transparent border-none p-0 outline-none text-left inline-block transform"
                   >
                     Termos de Uso
                   </button>
@@ -3508,21 +3508,22 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
 
             {/* Newsletter */}
             <div className="flex flex-col">
-              <h3 className="font-bold text-[13px] tracking-[0.15em] mb-8 text-white uppercase">Newsletter</h3>
-              <p className="text-white/70 text-[14px] font-medium leading-relaxed mb-6">
-                Cadastre-se para receber novidades, inspirações e ofertas exclusivas no seu email.
+              <h3 className="font-bold text-[12px] tracking-[0.16em] mb-8 text-white uppercase border-b border-white/10 pb-2 w-full md:w-3/4">Newsletter</h3>
+              <p className="text-white/80 text-[13.5px] font-medium leading-relaxed mb-6">
+                Cadastre-se para receber novidades e ofertas exclusivas diretamente no seu email.
               </p>
               <form className="relative mt-2" onSubmit={(e) => e.preventDefault()}>
                 <input 
                   type="email" 
-                  placeholder="Seu email" 
-                  className="w-full bg-white/10 border border-white/20 rounded-full px-6 py-4 text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-white/30 focus:border-transparent transition-all pr-14"
+                  placeholder="Digite seu melhor e-mail" 
+                  className="w-full bg-white/5 border border-white/15 hover:border-white/25 rounded-xl px-5 py-3.5 text-[13.5px] text-white placeholder:text-white/40 focus:outline-none focus:ring-2 focus:ring-brand-blue/30 focus:bg-white/10 focus:border-white/30 transition-all pr-14"
                 />
                 <button 
                   type="submit"
-                  className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 bg-white text-brand-blue rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors shadow-lg cursor-pointer"
+                  className="absolute right-1.5 top-1/2 -translate-y-1/2 w-9 h-9 bg-white text-brand-blue rounded-lg flex items-center justify-center hover:bg-white/95 active:scale-95 transition-all shadow-md cursor-pointer group"
+                  aria-label="Inscrever-se"
                 >
-                  <ChevronRight className="w-5 h-5 ml-0.5" strokeWidth={2.5} />
+                  <ChevronRight className="w-5 h-5 group-hover:translate-x-0.5 transition-transform" strokeWidth={2.5} />
                 </button>
               </form>
             </div>

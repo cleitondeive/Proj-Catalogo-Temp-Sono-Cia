@@ -185,7 +185,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
                   : product;
                 handleAddToCart(productToAdd, e);
               }}
-              className="group/cartbtn shrink-0 w-11 h-11 md:w-12 md:h-12 bg-[#0F172A] text-white rounded-full flex justify-center items-center hover:bg-brand-blue transition-all duration-500 shadow-[0_4px_14px_rgba(15,23,42,0.2)] hover:shadow-[0_8px_24px_rgba(1,82,148,0.4)] hover:-translate-y-1 relative overflow-hidden isolate"
+              className="group/cartbtn shrink-0 w-11 h-11 md:w-12 md:h-12 bg-brand-blue text-white rounded-full flex justify-center items-center hover:bg-brand-blue-hover transition-all duration-500 shadow-[0_4px_14px_rgba(19,60,109,0.22)] hover:shadow-[0_8px_24px_rgba(13,40,74,0.35)] hover:-translate-y-1 relative overflow-hidden isolate cursor-pointer"
               aria-label="Adicionar ao Carrinho"
             >
               <div className="absolute inset-0 bg-gradient-to-tr from-brand-blue/0 via-white/30 to-brand-blue/0 -translate-x-[200%] group-hover/cartbtn:translate-x-[200%] transition-transform duration-1000 ease-in-out z-0"></div>

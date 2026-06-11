@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { 
   X, Mail, Phone, MapPin, Clock, ArrowRight, Check, Send, 
   ChevronDown, ChevronUp, Search, MessageCircle, FileText, 
-  ShieldCheck, HeartHandshake, Headphones, Sparkles, Building, Copy
+  ShieldCheck, HeartHandshake, Headphones, Sparkles, Building, Copy, Calendar
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -71,7 +71,7 @@ export default function InstitutionalModal({
     }
     const textMessage = `Olá, meu nome é ${formName}. \n📧 Email: ${formEmail || "Não informado"} \n📞 Tel: ${formPhone || "Não informado"} \n📌 Assunto: ${formSubject} \n\n💬 Mensagem:\n${formMessage}`;
     const encoded = encodeURIComponent(textMessage);
-    window.open(`https://wa.me/5565981183473?text=${encoded}`, '_blank');
+    window.open(`https://wa.me/5565992549622?text=${encoded}`, '_blank');
   };
 
   // Curated Sleep/Furniture FAQs
@@ -176,7 +176,7 @@ export default function InstitutionalModal({
           <div className="hidden md:flex flex-col gap-4 pt-6 border-t border-white/5">
             <p className="text-white/40 text-[11px] font-bold tracking-[0.15em] uppercase">Fale Direto Conosco</p>
             <a 
-              href="https://wa.me/5565981183473" 
+              href="https://wa.me/5565992549622" 
               target="_blank" 
               rel="noreferrer" 
               className="flex items-center gap-2.5 text-[13px] font-bold text-emerald-400 hover:text-emerald-300 transition-colors"
@@ -325,9 +325,9 @@ export default function InstitutionalModal({
                         <Phone className="w-4 h-4 text-brand-blue" />
                       </div>
                       <div>
-                        <h4 className="text-[13px] font-bold uppercase text-gray-400 tracking-wider mb-0.5">Telefone Concierge</h4>
-                        <p className="text-gray-900 text-sm font-semibold mb-1">(65) 98118-3473</p>
-                        <p className="text-gray-400 text-xs">Atendimento corporativo e residencial premium.</p>
+                        <h4 className="text-[13px] font-bold uppercase text-gray-400 tracking-wider mb-0.5">Ligue-nos Agora</h4>
+                        <p className="text-gray-900 text-sm font-semibold mb-1">(65) 3025-6505 <span className="text-xs text-gray-400 font-normal">ou</span> (65) 9 9254-9622</p>
+                        <p className="text-gray-400 text-xs">Atendimento corporativo e consultoria premium.</p>
                       </div>
                     </div>
 
@@ -336,9 +336,9 @@ export default function InstitutionalModal({
                         <Mail className="w-4 h-4 text-brand-blue" />
                       </div>
                       <div>
-                        <h4 className="text-[13px] font-bold uppercase text-gray-400 tracking-wider mb-0.5">E-mail Corporativo</h4>
-                        <p className="text-gray-900 text-sm font-semibold mb-1">contato@sonoecia.com.br</p>
-                        <p className="text-gray-400 text-xs">Para propostas, arquitetos e parcerias.</p>
+                        <h4 className="text-[13px] font-bold uppercase text-gray-400 tracking-wider mb-0.5">Endereço de E-mail</h4>
+                        <p className="text-gray-900 text-sm font-semibold mb-1">financeiro@sonoecia.com.br</p>
+                        <p className="text-gray-400 text-xs">Faturamento, propostas e financeiro.</p>
                       </div>
                     </div>
 
@@ -347,9 +347,9 @@ export default function InstitutionalModal({
                         <Clock className="w-4 h-4 text-brand-blue" />
                       </div>
                       <div>
-                        <h4 className="text-[13px] font-bold uppercase text-gray-400 tracking-wider mb-0.5">Horários de Resposta</h4>
-                        <p className="text-gray-900 text-sm font-semibold mb-1">Seg a Sáb: 08h às 20h</p>
-                        <p className="text-gray-400 text-xs">Nossos sleep coaches respondem em minutos.</p>
+                        <h4 className="text-[13px] font-bold uppercase text-gray-400 tracking-wider mb-0.5">Segunda a Sexta</h4>
+                        <p className="text-gray-900 text-sm font-semibold mb-1">08h às 17h <span className="text-xs text-gray-400 font-normal">(não fecha para almoço)</span></p>
+                        <p className="text-gray-400 text-xs">Sábado: Atendimento somente por agendamento.</p>
                       </div>
                     </div>
                   </div>
@@ -369,110 +369,94 @@ export default function InstitutionalModal({
                     Visite um de nossos showrooms luxuosos e faça um teste sensorial completo de nossos colchões exclusivos, estofados ergonômicos e design de madeira nobre.
                   </p>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                    {/* Showroom 1 */}
-                    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between h-full relative overflow-hidden group">
+                  <div className="max-w-2xl">
+                    {/* Showroom Sede */}
+                    <div className="bg-white p-6 md:p-8 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between relative overflow-hidden group">
                       <div className="absolute top-0 right-0 w-24 h-24 bg-[#FAFAFA] rounded-full translate-x-8 -translate-y-8 group-hover:scale-110 transition-transform duration-300 flex items-center justify-center pr-6 pt-6">
                         <Building className="w-6 h-6 text-gray-200" />
                       </div>
                       
                       <div>
                         <span className="inline-block bg-brand-blue/10 text-brand-blue text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider mb-4 border border-brand-blue/20">
-                          Showroom Conceito
+                          Showroom Sede & Loja Física
                         </span>
-                        <h3 className="text-[18px] font-bold text-[#0F172A] mb-2 font-serif">Mato Grosso - Sede</h3>
-                        <p className="text-gray-500 text-sm mb-4 leading-relaxed max-w-[280px]">
-                          Av. Getúlio Vargas, 1420 - Centro Norte, Cuiabá - MT, CEP 78005-600
+                        <h3 className="text-[20px] font-bold text-[#0F172A] mb-3 font-serif">Nosso Endereço</h3>
+                        <p className="text-gray-600 text-[14.5px] mb-6 leading-relaxed max-w-xl">
+                          Av. Marechal Deodoro, 1721 - Bairro Quilombo - CEP: 78020-670 <br/>
+                          <span className="text-gray-400 text-xs font-medium">(Lateral Loja Emilly Atual)</span> - Cuiabá - MT
                         </p>
-                        <div className="space-y-2 mt-4 text-xs font-semibold text-[#475569]">
-                          <div className="flex items-center gap-2"><Phone className="w-3.5 h-3.5 text-brand-blue" /> <span>(65) 98118-3473</span></div>
-                          <div className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 text-brand-blue" /> <span>Seg a Sáb: 09h às 20h</span></div>
+                        
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-gray-100 pt-6">
+                          <div className="space-y-2.5">
+                            <h4 className="text-[11px] font-extrabold uppercase text-gray-400 tracking-wider">Contato & Atendimento</h4>
+                            <div className="flex items-center gap-2 text-xs font-semibold text-[#475569]">
+                              <Phone className="w-4 h-4 text-brand-blue shrink-0" /> 
+                              <span>(65) 3025-6505</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-xs font-semibold text-[#475569]">
+                              <Phone className="w-4 h-4 text-brand-blue shrink-0" /> 
+                              <span>(65) 9 9254-9622</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-xs font-semibold text-[#475569]">
+                              <Mail className="w-4 h-4 text-brand-blue shrink-0" /> 
+                              <span className="break-all text-xs">financeiro@sonoecia.com.br</span>
+                            </div>
+                          </div>
+
+                          <div className="space-y-2.5">
+                            <h4 className="text-[11px] font-extrabold uppercase text-gray-400 tracking-wider">Horário de Funcionamento</h4>
+                            <div className="flex items-start gap-2 text-xs font-semibold text-[#475569]">
+                              <Clock className="w-4 h-4 text-brand-blue shrink-0 mt-0.5" /> 
+                              <div>
+                                <p className="font-bold">Segunda a Sexta:</p>
+                                <p className="text-gray-500 font-medium text-[11px]">08h às 17h <span className="text-[10px] text-gray-400 block">(não fecha para almoço)</span></p>
+                              </div>
+                            </div>
+                            <div className="flex items-start gap-2 text-xs font-semibold text-[#475569]">
+                              <Calendar className="w-4 h-4 text-brand-blue shrink-0 mt-0.5" /> 
+                              <div>
+                                <p className="font-bold">Sábado:</p>
+                                <p className="text-gray-500 font-medium text-[11px]">Atendimento somente por agendamento</p>
+                              </div>
+                            </div>
+                          </div>
                         </div>
                       </div>
 
-                      <div className="border-t border-gray-50 pt-5 mt-6 flex items-center justify-between gap-4">
+                      <div className="border-t border-gray-100 pt-6 mt-6 flex items-center justify-between gap-4">
                         <button 
-                          onClick={() => handleCopyText("Av. Getúlio Vargas, 1420, Centro Norte, Cuiabá - MT", 0)}
-                          className="text-[12px] font-bold text-gray-400 hover:text-brand-blue flex items-center gap-1 cursor-pointer transition-colors"
+                          onClick={() => handleCopyText("Av. Marechal Deodoro, 1721, Bairro Quilombo, Cuiabá - MT, CEP 78020-670", 0)}
+                          className="text-[13px] font-bold text-gray-400 hover:text-brand-blue flex items-center gap-1.5 cursor-pointer transition-colors"
                         >
                           {copiedShowroom === 0 ? (
                             <>
-                              <Check className="w-3.5 h-3.5 text-emerald-500" />
+                              <Check className="w-4 h-4 text-emerald-500" />
                               <span className="text-emerald-600 font-bold">Copiado!</span>
                             </>
                           ) : (
                             <>
-                              <Copy className="w-3.5 h-3.5" />
+                              <Copy className="w-4 h-4" />
                               <span>Copiar Endereço</span>
                             </>
                           )}
                         </button>
                         <a 
-                          href="https://maps.google.com" 
+                          href="https://maps.google.com/?q=Av.+Marechal+Deodoro,+1721+-+Bairro+Quilombo+-+Cuiaba+-+MT" 
                           target="_blank" 
                           rel="noreferrer" 
-                          className="text-[12px] font-extrabold text-[#0D1B2A] hover:text-brand-blue flex items-center gap-1 transition-colors"
+                          className="text-[13px] font-extrabold text-[#0D1B2A] hover:text-brand-blue flex items-center gap-1.5 transition-colors"
                         >
                           <span>Como Chegar</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
-                        </a>
-                      </div>
-                    </div>
-
-                    {/* Showroom 2 */}
-                    <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex flex-col justify-between h-full relative overflow-hidden group">
-                      <div className="absolute top-0 right-0 w-24 h-24 bg-[#FAFAFA] rounded-full translate-x-8 -translate-y-8 group-hover:scale-110 transition-transform duration-300 flex items-center justify-center pr-6 pt-6">
-                        <Building className="w-6 h-6 text-gray-200" />
-                      </div>
-
-                      <div>
-                        <span className="inline-block bg-brand-blue/10 text-brand-blue text-[10px] font-extrabold px-3 py-1 rounded-full uppercase tracking-wider mb-4 border border-brand-blue/20">
-                          Showroom Jardins
-                        </span>
-                        <h3 className="text-[18px] font-bold text-[#0F172A] mb-2 font-serif">São Paulo - SP</h3>
-                        <p className="text-gray-500 text-sm mb-4 leading-relaxed max-w-[280px]">
-                          Alameda Lorena, 1500 - Jardins, São Paulo - SP, CEP 01424-002
-                        </p>
-                        <div className="space-y-2 mt-4 text-xs font-semibold text-[#475569]">
-                          <div className="flex items-center gap-2"><Phone className="w-3.5 h-3.5 text-brand-blue" /> <span>(11) 3088-2511</span></div>
-                          <div className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 text-brand-blue" /> <span>Seg a Sáb: 10h às 19h</span></div>
-                        </div>
-                      </div>
-
-                      <div className="border-t border-gray-50 pt-5 mt-6 flex items-center justify-between gap-4">
-                        <button 
-                          onClick={() => handleCopyText("Alameda Lorena, 1500, Jardins, São Paulo - SP", 1)}
-                          className="text-[12px] font-bold text-gray-400 hover:text-brand-blue flex items-center gap-1 cursor-pointer transition-colors"
-                        >
-                          {copiedShowroom === 1 ? (
-                            <>
-                              <Check className="w-3.5 h-3.5 text-emerald-500" />
-                              <span className="text-emerald-600 font-bold">Copiado!</span>
-                            </>
-                          ) : (
-                            <>
-                              <Copy className="w-3.5 h-3.5" />
-                              <span>Copiar Endereço</span>
-                            </>
-                          )}
-                        </button>
-                        <a 
-                          href="https://maps.google.com" 
-                          target="_blank" 
-                          rel="noreferrer" 
-                          className="text-[12px] font-extrabold text-[#0D1B2A] hover:text-brand-blue flex items-center gap-1 transition-colors"
-                        >
-                          <span>Como Chegar</span>
-                          <ArrowRight className="w-3.5 h-3.5" />
+                          <ArrowRight className="w-4 h-4" />
                         </a>
                       </div>
                     </div>
                   </div>
 
-                  <div className="bg-brand-blue/5 border border-brand-blue/10 p-4 rounded-xl flex items-start gap-3 mt-4 animate-fade-in">
+                  <div className="bg-brand-blue/5 border border-brand-blue/10 p-4 rounded-xl flex items-start gap-3 mt-4 animate-fade-in max-w-2xl">
                     <Sparkles className="w-5 h-5 text-brand-blue shrink-0 mt-0.5" />
                     <p className="text-brand-blue text-xs font-semibold leading-relaxed">
-                      <strong>Estacionamento com Valet Cortesia:</strong> Todas as nossas lojas contam com estacionamento privativo e recepção com manobrista cortesia para o seu conforto absoluto durante as decisões de sono.
+                      <strong>Estacionamento Privativo Cortesia:</strong> Nosso showroom conta com estacionamento privativo e atendimento totalmente personalizado com agendamento VIP para o seu conforto absoluto e tranquilidade durante as suas decisões de sono.
                     </p>
                   </div>
                 </motion.div>
