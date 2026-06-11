@@ -1,0 +1,6 @@
+{
+  "name": "Sono & Cia - Catálogo Premium",
+  "description": "Catálogo interativo de colchões, travesseiros e enxovais Sono & Cia. Inclui comparador de produtos, quiz de colchão ideal e simulação de orçamento.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

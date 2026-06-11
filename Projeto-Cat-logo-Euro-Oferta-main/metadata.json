@@ -1,8 +1,0 @@
-{
-  "name": "Euro Oferta",
-  "description": "Catálogo Luxo Home app with a professional and minimalistic design.",
-  "requestFramePermissions": [],
-  "majorCapabilities": [
-    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
-  ]
-}
