@@ -98,6 +98,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           alt={product.name}
           className={`w-full h-full object-cover group-hover:scale-105 transition-all duration-700 ease-out ${isImageFading ? 'opacity-0 scale-[0.98]' : 'opacity-100 scale-100'}`}
           referrerPolicy="no-referrer"
+          loading={idx < 4 ? undefined : "lazy"}
         />
       </div>
 

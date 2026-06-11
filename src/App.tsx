@@ -1826,6 +1826,7 @@ export default function App() {
                 alt="Quarto Luxuoso"
                 className="w-full h-full object-cover grayscale-[0.3] brightness-[0.85] contrast-[1.1] transition-transform duration-1000 group-hover:scale-105"
                 referrerPolicy="no-referrer"
+                fetchPriority="high"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-black/10 pointer-events-none" />
 
