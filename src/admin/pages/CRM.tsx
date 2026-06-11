@@ -335,7 +335,7 @@ export default function CRM({ currentUser }: { currentUser?: AdminUser }) {
           </div>
           
           <div className="flex items-center gap-3 shrink-0">
-            <button onClick={() => setShowAddLead(true)} className="h-[42px] px-4 py-2 bg-[#0F172A] text-white rounded-xl hover:bg-black transition-colors shadow-sm flex items-center gap-2 font-bold text-xs uppercase tracking-wider group shrink-0 whitespace-nowrap">
+            <button onClick={() => setShowAddLead(true)} className="h-[42px] px-4 py-2 bg-brand-blue text-white rounded-xl hover:bg-brand-blue-hover transition-colors shadow-sm flex items-center gap-2 font-bold text-xs uppercase tracking-wider group shrink-0 whitespace-nowrap cursor-pointer">
               <Plus className="w-3.5 h-3.5 group-hover:scale-110 transition-transform" /> Adicionar Lead
             </button>
             <button 
@@ -855,7 +855,7 @@ export default function CRM({ currentUser }: { currentUser?: AdminUser }) {
                <button 
                  onClick={handleAddNewLead}
                  disabled={!newLeadData.name || !newLeadData.phone}
-                 className="px-6 py-2.5 bg-[#0F172A] hover:bg-black text-white font-bold text-sm rounded-xl shadow-[0_4px_14px_rgba(0,0,0,0.15)] disabled:opacity-50 transition-all flex items-center gap-2"
+                 className="px-6 py-2.5 bg-brand-blue hover:bg-brand-blue-hover text-white font-bold text-sm rounded-xl shadow-[0_4px_14px_rgba(1,82,148,0.2)] hover:shadow-[0_4px_20px_rgba(1,82,148,0.3)] disabled:opacity-50 transition-all flex items-center gap-2 cursor-pointer"
                >
                  Salvar Lead
                </button>
@@ -2434,7 +2434,7 @@ export const LeadDetailsModal = ({ lead, onClose }: { lead: Lead, onClose: () =>
                         </button>
                         <input type="text" value={newNote} onChange={e => setNewNote(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleAddNote()} placeholder="Adicionar nota, email enviado ou observação..." className="flex-1 bg-transparent border-none outline-none text-sm placeholder:text-gray-400" />
                       </div>
-                      <button onClick={handleAddNote} className="px-6 py-2.5 bg-[#0F172A] text-white rounded-xl font-bold text-xs hover:bg-black transition-all shadow-sm disabled:opacity-50" disabled={!newNote.trim() && !noteImage}>Salvar Nota</button>
+                      <button onClick={handleAddNote} className="px-6 py-2.5 bg-brand-blue text-white rounded-xl font-bold text-xs hover:bg-brand-blue-hover transition-all shadow-sm disabled:opacity-50 cursor-pointer" disabled={!newNote.trim() && !noteImage}>Salvar Nota</button>
                     </div>
                   </div>
                 )}
@@ -2461,7 +2461,7 @@ export const LeadDetailsModal = ({ lead, onClose }: { lead: Lead, onClose: () =>
                       </div>
                     </div>
                     <div className="flex justify-end border-t border-gray-100 pt-3">
-                      <button onClick={handleAddSchedule} disabled={!scheduleData.title || !scheduleData.date} className="px-6 py-2.5 bg-[#0F172A] text-white rounded-lg text-xs font-bold hover:bg-black transition-all disabled:opacity-50 shadow-sm flex items-center gap-2">
+                      <button onClick={handleAddSchedule} disabled={!scheduleData.title || !scheduleData.date} className="px-6 py-2.5 bg-brand-blue text-white rounded-lg text-xs font-bold hover:bg-brand-blue-hover transition-all disabled:opacity-50 shadow-sm flex items-center gap-2 cursor-pointer">
                         <CalendarDays className="w-4 h-4" /> Agendar
                       </button>
                     </div>

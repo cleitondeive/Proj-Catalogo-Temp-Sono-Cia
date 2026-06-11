@@ -43,6 +43,12 @@ import {
   Lock,
   Layers,
   Maximize,
+  Headphones,
+  MapPin,
+  HeartHandshake,
+  FileText,
+  Phone,
+  Clock,
 } from "lucide-react";
 import { motion } from "motion/react";
 import React, { useState, useRef, useEffect, useMemo } from "react";
@@ -50,6 +56,7 @@ import AdminDashboard from "./admin/AdminDashboard";
 import Auth from "./admin/components/Auth";
 import { useStore } from "./store";
 import Logo from "./components/Logo";
+import InstitutionalModal from "./components/InstitutionalModal";
 
 // Custom CSS for Ken Burns and Pulsing Dot
 const customStyles = `
@@ -1061,7 +1068,7 @@ export default function App() {
       // Simulate initial loading for premium feel
       const timer = setTimeout(() => {
         setAppLoaded(true);
-      }, 800);
+      }, 1200);
       return () => clearTimeout(timer);
     }
   }, [adminStore.isLoading]);
@@ -1137,6 +1144,33 @@ export default function App() {
   const [currentView, setCurrentView] = useState<'home' | 'wishlist' | 'category' | 'admin'>('home');
   const [isAdminAuth, setIsAdminAuth] = useState(() => localStorage.getItem('admin_auth') === 'true');
   const [selectedCategory, setSelectedCategory] = useState<any | null>(null);
+
+  // Help menu & Institutional pages state
+  const [isHelpMenuOpen, setIsHelpMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [institutionalModalOpen, setInstitutionalModalOpen] = useState(false);
+  const [institutionalActiveTab, setInstitutionalActiveTab] = useState<'fale-conosco' | 'endereco' | 'sobre' | 'central-ajuda' | 'politica' | 'termos'>('fale-conosco');
+  const helpMenuTimeoutRef = useRef<any>(null);
+
+  const handleHelpMenuEnter = () => {
+    if (helpMenuTimeoutRef.current) {
+      clearTimeout(helpMenuTimeoutRef.current);
+      helpMenuTimeoutRef.current = null;
+    }
+    setIsHelpMenuOpen(true);
+  };
+
+  const handleHelpMenuLeave = () => {
+    helpMenuTimeoutRef.current = setTimeout(() => {
+      setIsHelpMenuOpen(false);
+    }, 150);
+  };
+
+  const openInstitutionalPage = (tab: 'fale-conosco' | 'endereco' | 'sobre' | 'central-ajuda' | 'politica' | 'termos') => {
+    setInstitutionalActiveTab(tab);
+    setInstitutionalModalOpen(true);
+    setIsHelpMenuOpen(false);
+  };
 
   const handleSelectCategory = (categoryId: string) => {
     const cat = categories.find(c => c.name === categoryId);
@@ -1228,16 +1262,33 @@ export default function App() {
     <>
       {/* Premium Loader */}
       <div 
-        className={`fixed inset-0 z-[999] bg-[#000000] flex flex-col items-center justify-center transition-all duration-1000 ease-[0.83, 0, 0.17, 1] ${appLoaded ? '-translate-y-full' : 'translate-y-0'}`}
+        className={`fixed inset-0 z-[999] bg-gradient-to-b from-[#0A0D14] via-[#05060A] to-[#010204] flex flex-col items-center justify-center transition-all duration-1000 ease-[0.83, 0, 0.17, 1] ${appLoaded ? '-translate-y-full opacity-0 pointer-events-none' : 'translate-y-0 opacity-100'}`}
       >
-        <div className="flex flex-col items-center">
-           <BedDouble className={`w-12 h-12 text-white mb-6 transition-all duration-700 ${appLoaded ? 'opacity-0 scale-90' : 'opacity-100 scale-100 animate-pulse'}`} strokeWidth={1} />
-            <div className={`transition-all duration-700 delay-100 ${appLoaded ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
-              <Logo inverse className="h-14 sm:h-16 md:h-18 lg:h-20 w-auto" />
-            </div>
-        </div>
-        <div className={`absolute bottom-24 w-64 h-[1px] bg-white/20 overflow-hidden transition-opacity duration-500 ${appLoaded ? 'opacity-0' : 'opacity-100'}`}>
-          <div className="h-full bg-white w-full flex origin-left animate-[loader-progress_ease-in-out_forwards]" style={{ animationDuration: '1.4s' }} />
+        <div className="flex flex-col items-center max-w-sm px-6 text-center">
+          {/* Elegant Circular Bed Icon */}
+          <div className={`mb-8 flex items-center justify-center w-20 h-20 rounded-full border border-white/10 bg-white/[0.03] backdrop-blur-md shadow-[0_8px_32px_rgba(0,0,0,0.5)] transition-all duration-700 ${appLoaded ? 'opacity-0 scale-90 -translate-y-4' : 'opacity-100 scale-100 animate-[pulse_2.5s_infinite_ease-in-out]'}`}>
+            <BedDouble className="w-9 h-9 text-white stroke-[1.25]" />
+          </div>
+
+          {/* Logo container with proper spacing */}
+          <div className={`transition-all duration-700 delay-150 ${appLoaded ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
+            <Logo inverse className="h-15 sm:h-18 md:h-21 w-auto scale-120 sm:scale-125 transform transition-all" />
+          </div>
+
+          {/* Luxury Badge Subtitle */}
+          <div className={`transition-all duration-700 delay-300 ${appLoaded ? 'opacity-0 translate-y-4' : 'opacity-100 translate-y-0'}`}>
+            <p className="text-[10px] sm:text-[11px] tracking-[0.3em] font-black text-amber-500/95 uppercase mt-5 select-none">
+              CURADORIA EXCLUSIVA DO SONO
+            </p>
+          </div>
+
+          {/* Sleek Golden Progress Tracker Loader */}
+          <div className={`w-44 sm:w-52 h-[2px] bg-white/10 rounded-full overflow-hidden mt-10 transition-all duration-700 delay-400 ${appLoaded ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}`}>
+            <div 
+              className="h-full bg-gradient-to-r from-amber-600 via-amber-400 to-amber-600 w-full rounded-full origin-left animate-[loader-progress_ease-in-out_forwards]" 
+              style={{ animationDuration: '1.2s' }} 
+            />
+          </div>
         </div>
       </div>
 
@@ -1388,12 +1439,25 @@ export default function App() {
             />
           </div>
           <div className="hidden md:flex gap-6 w-1/3 justify-end text-[10px] tracking-widest font-semibold text-white/90 uppercase">
-            <a href="#" className="hover:text-white transition-opacity">
-              Precisa de Ajuda?
-            </a>
-            <a href="#" className="hover:text-white transition-opacity">
+            <div
+              onMouseEnter={handleHelpMenuEnter}
+              onMouseLeave={handleHelpMenuLeave}
+              className="relative py-1"
+            >
+              <button 
+                onClick={() => openInstitutionalPage('central-ajuda')}
+                className="hover:text-white transition-opacity flex items-center gap-1.5 cursor-pointer bg-transparent border-none outline-none font-bold text-[10px] tracking-widest uppercase text-white/90"
+              >
+                Precisa de Ajuda? 
+                <ChevronDown className={`w-3.5 h-3.5 transition-transform duration-300 ${isHelpMenuOpen ? 'rotate-180 text-amber-400' : ''}`} />
+              </button>
+            </div>
+            <button 
+              onClick={() => openInstitutionalPage('endereco')}
+              className="hover:text-white transition-opacity cursor-pointer bg-transparent border-none outline-none font-bold text-[10px] tracking-widest uppercase text-white/90 py-1"
+            >
               Nossas Lojas
-            </a>
+            </button>
           </div>
         </div>
 
@@ -1402,8 +1466,13 @@ export default function App() {
           className={`bg-white border-b border-gray-100 flex justify-between items-center px-4 md:px-8 2xl:px-12 3xl:px-16 w-full transition-all duration-500 ease-out relative z-10 shadow-sm ${isScrolled ? "py-1 md:py-1.5" : "py-2 md:py-2.5"}`}
         >
           <div className="flex items-center gap-1 sm:gap-2 md:gap-4 flex-1 md:flex-none md:w-1/3">
-            <button className="p-2 cursor-pointer hover:text-brand-blue transition-colors text-[#0F172A] md:hidden -ml-2">
-              <Menu className="w-7 h-7" strokeWidth={1.5} />
+            <button 
+              onClick={() => setIsMobileMenuOpen(true)}
+              onMouseEnter={() => setIsMobileMenuOpen(true)}
+              className="p-2 cursor-pointer hover:text-brand-blue transition-colors text-[#0F172A] md:hidden -ml-2"
+              aria-label="Menu principal"
+            >
+              <Menu className="w-7 h-7 hover:scale-105 transition-transform" strokeWidth={1.5} />
             </button>
             <div className="hidden md:flex flex-col relative w-full max-w-[320px] 2xl:max-w-[400px] 3xl:max-w-[500px]" ref={searchRef}>
               <div className="flex items-center bg-[#F8F9FA] rounded-[30px] px-5 py-3 2xl:py-4 3xl:py-5 w-full border border-gray-100 focus-within:border-brand-blue focus-within:bg-white focus-within:shadow-[0_4px_20px_rgba(1,82,148,0.08)] transition-all z-50">
@@ -1502,6 +1571,203 @@ export default function App() {
                 </span>
               )}
             </button>
+          </div>
+        </div>
+
+        {/* Creative Mega Menu */}
+        <div
+          onMouseEnter={handleHelpMenuEnter}
+          onMouseLeave={handleHelpMenuLeave}
+          className={`absolute left-0 right-0 bg-white border-b border-gray-100 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.15)] z-40 transition-all duration-500 ease-out overflow-hidden ${
+            isHelpMenuOpen 
+              ? 'opacity-100 translate-y-0 pointer-events-auto visible' 
+              : 'opacity-0 -translate-y-2 pointer-events-none invisible'
+          }`}
+          style={{ top: '100%' }}
+        >
+          <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-12 lg:grid-cols-12 gap-8 p-8 md:p-10 lg:p-12 text-[#0F172A]">
+            {/* Column 1: Atendimento (5 cols on lg, 6 cols on md) */}
+            <div className="md:col-span-6 lg:col-span-5 flex flex-col">
+              <div className="flex items-center gap-2.5 mb-6">
+                <div className="w-8 h-8 rounded-full bg-brand-blue/5 flex items-center justify-center">
+                  <Headphones className="w-4.5 h-4.5 text-brand-blue" />
+                </div>
+                <h3 className="font-serif font-bold text-lg md:text-xl tracking-tight text-gray-900">
+                  Central de Atendimento
+                </h3>
+              </div>
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
+                <button 
+                  onClick={() => openInstitutionalPage('fale-conosco')}
+                  className="flex items-center gap-3 group text-left p-2 rounded-xl hover:bg-gray-50/80 transition-all cursor-pointer"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-emerald-50 text-emerald-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <MessageCircle className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-bold text-gray-900 group-hover:text-brand-blue transition-colors">Fale Conosco</p>
+                    <p className="text-[10px] text-gray-400 font-semibold">WhatsApp, Chat e E-mail</p>
+                  </div>
+                </button>
+
+                <button 
+                  onClick={() => openInstitutionalPage('endereco')}
+                  className="flex items-center gap-3 group text-left p-2 rounded-xl hover:bg-gray-50/80 transition-all cursor-pointer"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-red-50 text-red-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <MapPin className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-bold text-gray-900 group-hover:text-brand-blue transition-colors">Nossos Endereços</p>
+                    <p className="text-[10px] text-gray-400 font-semibold">Nossos showrooms físicos</p>
+                  </div>
+                </button>
+
+                <button 
+                  onClick={() => openInstitutionalPage('sobre')}
+                  className="flex items-center gap-3 group text-left p-2 rounded-xl hover:bg-gray-50/80 transition-all cursor-pointer"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <HeartHandshake className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-bold text-gray-900 group-hover:text-brand-blue transition-colors">Sobre a Marca</p>
+                    <p className="text-[10px] text-gray-400 font-semibold">Nossos 25 anos de história</p>
+                  </div>
+                </button>
+
+                <button 
+                  onClick={() => openInstitutionalPage('central-ajuda')}
+                  className="flex items-center gap-3 group text-left p-2 rounded-xl hover:bg-gray-50/80 transition-all cursor-pointer"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-amber-50 text-amber-500 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <Sparkles className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-bold text-gray-900 group-hover:text-brand-blue transition-colors">Central de Ajuda</p>
+                    <p className="text-[10px] text-gray-400 font-semibold">Perguntas frequentes e FAQs</p>
+                  </div>
+                </button>
+
+                <button 
+                  onClick={() => openInstitutionalPage('politica')}
+                  className="flex items-center gap-3 group text-left p-2 rounded-xl hover:bg-gray-50/80 transition-all cursor-pointer"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <ShieldCheck className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-bold text-gray-900 group-hover:text-brand-blue transition-colors">Privacidade</p>
+                    <p className="text-[10px] text-gray-400 font-semibold">Segurança de dados LGPD</p>
+                  </div>
+                </button>
+
+                <button 
+                  onClick={() => openInstitutionalPage('termos')}
+                  className="flex items-center gap-3 group text-left p-2 rounded-xl hover:bg-gray-50/80 transition-all cursor-pointer"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-gray-100 text-gray-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <FileText className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-bold text-gray-900 group-hover:text-brand-blue transition-colors">Termos de Uso</p>
+                    <p className="text-[10px] text-gray-400 font-semibold">Nossos contratos comerciais</p>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            {/* Column 2: Departamentos (4 cols on lg, 6 cols on md) */}
+            <div className="md:col-span-6 lg:col-span-4 flex flex-col border-r-0 lg:border-r border-[#0F172A]/5 pr-0 lg:pr-8">
+              <div className="flex items-center gap-2.5 mb-6">
+                <div className="w-8 h-8 rounded-full bg-brand-blue/5 flex items-center justify-center">
+                  <Box className="w-4 h-4 text-brand-blue" />
+                </div>
+                <h3 className="font-serif font-bold text-lg md:text-xl tracking-tight text-gray-900">
+                  Nossos Departamentos
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 gap-4">
+                <button 
+                  onClick={() => { handleSelectCategory("Móveis de\nMadeira"); setIsHelpMenuOpen(false); }}
+                  className="flex items-center gap-3 group text-left p-2 rounded-xl hover:bg-gray-50/80 transition-all cursor-pointer"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-amber-50 text-amber-700 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
+                    <Box className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-bold text-gray-900 group-hover:text-brand-blue transition-colors leading-tight">Móveis de Madeira</p>
+                    <p className="text-[10px] text-gray-400 font-semibold leading-tight">Madeira maciça sustentável</p>
+                  </div>
+                </button>
+
+                <button 
+                  onClick={() => { handleSelectCategory("Estofados"); setIsHelpMenuOpen(false); }}
+                  className="flex items-center gap-3 group text-left p-2 rounded-xl hover:bg-gray-50/80 transition-all cursor-pointer"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
+                    <Armchair className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-bold text-gray-900 group-hover:text-brand-blue transition-colors">Estofados</p>
+                    <p className="text-[10px] text-gray-400 font-semibold leading-tight">Sofás premium e poltronas</p>
+                  </div>
+                </button>
+
+                <button 
+                  onClick={() => { handleSelectCategory("Camas"); setIsHelpMenuOpen(false); }}
+                  className="flex items-center gap-3 group text-left p-2 rounded-xl hover:bg-gray-50/80 transition-all cursor-pointer"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-indigo-50 text-indigo-500 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
+                    <BedDouble className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-bold text-gray-900 group-hover:text-brand-blue transition-colors">Camas</p>
+                    <p className="text-[10px] text-gray-400 font-semibold leading-tight">Estruturas e cabeceiras</p>
+                  </div>
+                </button>
+
+                <button 
+                  onClick={() => { handleSelectCategory("Travesseiros"); setIsHelpMenuOpen(false); }}
+                  className="flex items-center gap-3 group text-left p-2 rounded-xl hover:bg-gray-50/80 transition-all cursor-pointer"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-sky-50 text-sky-500 flex items-center justify-center group-hover:scale-110 transition-transform shrink-0">
+                    <Cloud className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-bold text-gray-900 group-hover:text-brand-blue transition-colors">Travesseiros</p>
+                    <p className="text-[10px] text-gray-400 font-semibold leading-tight">Látex e espuma de memória</p>
+                  </div>
+                </button>
+              </div>
+            </div>
+
+            {/* Column 3: Promo / Curadoria Destaque (3 cols on lg, 12 cols on md layout) */}
+            <div className="md:col-span-12 lg:col-span-3 flex flex-col md:flex-row lg:flex-col justify-between items-start md:items-center lg:items-start bg-gradient-to-br from-[#0A0D14] to-[#1C202F] p-6 lg:p-6 md:p-8 rounded-2xl text-white relative overflow-hidden shadow-md md:mt-3 lg:mt-0 w-full gap-4 md:gap-8 lg:gap-4">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-white/[0.02] rounded-full translate-x-10 -translate-y-10 pointer-events-none" />
+              <div className="flex-1">
+                <span className="inline-block bg-brand-blue/30 text-blue-200 border border-brand-blue/45 text-[9px] font-bold px-2.5 py-1 rounded-full uppercase tracking-wider mb-2">
+                  Consultoria V.I.P.
+                </span>
+                <h4 className="font-serif font-black text-white text-[15px] md:text-lg lg:text-[15px] leading-snug tracking-tight mb-1.5 font-stretch-100">
+                  Dúvida sobre o produto ideal?
+                </h4>
+                <p className="text-white/60 text-[11px] md:text-xs lg:text-[11px] leading-relaxed mb-3">
+                  Nossos curadores estão prontos para projetar a solução de descanso perfeita.
+                </p>
+              </div>
+              <a 
+                href="https://wa.me/5565981183473"
+                target="_blank"
+                rel="noreferrer"
+                className="w-full md:w-auto lg:w-full flex items-center justify-between bg-brand-blue hover:bg-brand-blue-hover transition-all text-white font-bold text-[11px] uppercase tracking-wider px-4 py-3 lg:py-2.5 rounded-xl hover:shadow-lg shadow-brand-blue/10 text-center cursor-pointer group shrink-0"
+              >
+                <span>Falar com Especialista</span>
+                <ArrowRight className="w-3.5 h-3.5 shrink-0 ml-2 group-hover:translate-x-1 transition-transform" />
+              </a>
+            </div>
           </div>
         </div>
       </header>
@@ -2805,6 +3071,272 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
         </div>
       )}
 
+      {/* Immersive Mobile Mega Menu */}
+      {isMobileMenuOpen && (
+        <div 
+          className="fixed inset-0 z-[100] md:hidden flex justify-start overflow-hidden bg-slate-900/60 backdrop-blur-sm"
+          onMouseLeave={() => setIsMobileMenuOpen(false)}
+        >
+          {/* Overlay click area */}
+          <div 
+            className="absolute inset-0 -z-10" 
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+
+          {/* Drawer Inner Panel */}
+          <motion.div
+            initial={{ x: "-100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "-100%" }}
+            transition={{ type: "spring", damping: 25, stiffness: 220 }}
+            className="w-[85vw] max-w-[380px] h-full bg-white flex flex-col shadow-[10px_0_40px_rgba(0,0,0,0.15)] overflow-hidden"
+          >
+            {/* Header: Logo & Close */}
+            <div className="flex items-center justify-between px-5 py-5 border-b border-gray-100 bg-gray-50/50 shrink-0">
+              <div 
+                onClick={() => { setCurrentView('home'); setIsMobileMenuOpen(false); }} 
+                className="cursor-pointer flex items-center h-10 pl-2"
+              >
+                <Logo className="h-10 w-auto transform origin-left scale-[3.4] hover:opacity-90 transition-all duration-300" />
+              </div>
+              <button 
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="p-2 -mr-2 rounded-full hover:bg-gray-100 text-[#0F172A] transition-colors cursor-pointer"
+                aria-label="Fechar menu"
+              >
+                <X className="w-5.5 h-5.5" strokeWidth={2} />
+              </button>
+            </div>
+
+            {/* Scrollable Body */}
+            <div className="flex-1 overflow-y-auto px-5 py-6 space-y-6 scrollbar-thin">
+              {/* Specialized Search Input */}
+              <div className="relative">
+                <div className="flex items-center bg-[#F8F9FA] rounded-[18px] px-4 py-2.5 border border-gray-100 focus-within:border-brand-blue focus-within:bg-white focus-within:shadow-[0_4px_16px_rgba(1,82,148,0.06)] transition-all">
+                  <Search className="w-4.5 h-4.5 text-gray-400 shrink-0" strokeWidth={2.5} />
+                  <input
+                    type="text"
+                    placeholder="Buscar colchão, sofá, cama..."
+                    value={searchQuery}
+                    onChange={(e) => {
+                      handleSearchChange(e);
+                    }}
+                    className="bg-transparent border-none outline-none ml-2 text-sm w-full placeholder-gray-400 text-[#0F172A] font-medium"
+                  />
+                </div>
+                {/* Embedded quick search results if there is query */}
+                {searchQuery.trim() !== "" && searchResults.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 bg-white rounded-xl shadow-xl border border-gray-100 overflow-hidden z-10 m-1 max-h-[180px] overflow-y-auto">
+                    {searchResults.map((product, idx) => (
+                      <div
+                        key={idx}
+                        className="flex items-center gap-3 p-2.5 hover:bg-gray-50 cursor-pointer border-b border-gray-50 last:border-none"
+                        onClick={() => {
+                          setQuickViewProduct(product);
+                          setIsMobileMenuOpen(false);
+                          setSearchQuery('');
+                        }}
+                      >
+                        <img src={product.image} alt={product.name} className="w-8 h-8 object-cover rounded-md bg-[#F8F9FA]" referrerPolicy="no-referrer" />
+                        <div className="min-w-0 flex-1">
+                          <p className="text-xs font-bold text-[#0F172A] truncate">{product.name}</p>
+                          <p className="text-[11px] font-semibold text-brand-blue">{product.showPrice !== false ? `R$ ${product.price}` : 'Consulte'}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {/* Departamentos / Categories Section */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-3.5 bg-brand-blue rounded-full" />
+                  <h4 className="text-[11px] uppercase tracking-wider font-extrabold text-gray-400">Nossos Departamentos</h4>
+                </div>
+                
+                <div className="grid grid-cols-1 gap-2">
+                  <button 
+                    onClick={() => { handleSelectCategory("Móveis de\nMadeira"); setIsMobileMenuOpen(false); }}
+                    className="flex items-center gap-3 w-full text-left p-3 rounded-2xl bg-amber-500/[0.03] border border-amber-500/10 hover:bg-amber-100/10 transition-all cursor-pointer"
+                  >
+                    <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-700 flex items-center justify-center shrink-0 border border-amber-100">
+                      <Box className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-extrabold text-[#0F172A]">Móveis de Madeira</p>
+                      <p className="text-[10px] text-gray-400 font-medium truncate">Peças maciças e design sustentável</p>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-gray-300" />
+                  </button>
+
+                  <button 
+                    onClick={() => { handleSelectCategory("Estofados"); setIsMobileMenuOpen(false); }}
+                    className="flex items-center gap-3 w-full text-left p-3 rounded-2xl bg-teal-500/[0.03] border border-teal-500/10 hover:bg-teal-100/10 transition-all cursor-pointer"
+                  >
+                    <div className="w-9 h-9 rounded-xl bg-teal-50 text-teal-600 flex items-center justify-center shrink-0 border border-teal-100">
+                      <Armchair className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-extrabold text-[#0F172A]">Estofados</p>
+                      <p className="text-[10px] text-gray-400 font-medium truncate">Sofás sob medida e alta sofisticação</p>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-gray-300" />
+                  </button>
+
+                  <button 
+                    onClick={() => { handleSelectCategory("Camas"); setIsMobileMenuOpen(false); }}
+                    className="flex items-center gap-3 w-full text-left p-3 rounded-2xl bg-indigo-500/[0.03] border border-indigo-500/10 hover:bg-indigo-100/10 transition-all cursor-pointer"
+                  >
+                    <div className="w-9 h-9 rounded-xl bg-indigo-50 text-indigo-500 flex items-center justify-center shrink-0 border border-indigo-100">
+                      <BedDouble className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-extrabold text-[#0F172A]">Camas & Cabeceiras</p>
+                      <p className="text-[10px] text-gray-400 font-medium truncate">Sistemas ergonômicos e acabamentos premium</p>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-gray-300" />
+                  </button>
+
+                  <button 
+                    onClick={() => { handleSelectCategory("Travesseiros"); setIsMobileMenuOpen(false); }}
+                    className="flex items-center gap-3 w-full text-left p-3 rounded-2xl bg-sky-500/[0.03] border border-sky-500/10 hover:bg-sky-100/10 transition-all cursor-pointer"
+                  >
+                    <div className="w-9 h-9 rounded-xl bg-sky-50 text-sky-500 flex items-center justify-center shrink-0 border border-sky-100">
+                      <Cloud className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-extrabold text-[#0F172A]">Travesseiros Especiais</p>
+                      <p className="text-[10px] text-gray-400 font-medium truncate">Látex importado e viscoelástico inteligente</p>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-gray-300" />
+                  </button>
+
+                  <button 
+                    onClick={() => { handleSelectCategory("Colchões"); setIsMobileMenuOpen(false); }}
+                    className="flex items-center gap-3 w-full text-left p-3 rounded-2xl bg-purple-500/[0.03] border border-purple-500/10 hover:bg-purple-100/10 transition-all cursor-pointer"
+                  >
+                    <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0 border border-purple-100">
+                      <Sofa className="w-5 h-5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-extrabold text-[#0F172A]">Colchões Anatômicos</p>
+                      <p className="text-[10px] text-gray-400 font-medium truncate">Ortopedia clínica e molas ensacadas premium</p>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-gray-300" />
+                  </button>
+                </div>
+              </div>
+
+              {/* Atendimento e Institucional */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2">
+                  <div className="w-1.5 h-3.5 bg-brand-blue rounded-full" />
+                  <h4 className="text-[11px] uppercase tracking-wider font-extrabold text-gray-400">Atendimento & Suporte</h4>
+                </div>
+
+                <div className="grid grid-cols-2 gap-2">
+                  <button 
+                    onClick={() => { openInstitutionalPage('fale-conosco'); setIsMobileMenuOpen(false); }}
+                    className="flex flex-col items-start gap-1 py-3 px-3.5 rounded-xl border border-gray-100 hover:bg-gray-50 text-left transition-colors cursor-pointer"
+                  >
+                    <Headphones className="w-4 h-4 text-[#133c6d]" />
+                    <span className="text-[13px] font-bold text-gray-900 mt-1">Contato</span>
+                    <span className="text-[9px] text-gray-400 leading-none">Canais diretos</span>
+                  </button>
+
+                  <button 
+                    onClick={() => { openInstitutionalPage('endereco'); setIsMobileMenuOpen(false); }}
+                    className="flex flex-col items-start gap-1 py-3 px-3.5 rounded-xl border border-gray-100 hover:bg-gray-50 text-left transition-colors cursor-pointer"
+                  >
+                    <MapPin className="w-4 h-4 text-red-500" />
+                    <span className="text-[13px] font-bold text-gray-900 mt-1">Nossas Lojas</span>
+                    <span className="text-[9px] text-gray-400 leading-none">Showrooms físicos</span>
+                  </button>
+
+                  <button 
+                    onClick={() => { openInstitutionalPage('sobre'); setIsMobileMenuOpen(false); }}
+                    className="flex flex-col items-start gap-1 py-3 px-3.5 rounded-xl border border-gray-100 hover:bg-gray-50 text-left transition-colors cursor-pointer"
+                  >
+                    <HeartHandshake className="w-4 h-4 text-indigo-500" />
+                    <span className="text-[13px] font-bold text-gray-900 mt-1">História</span>
+                    <span className="text-[9px] text-gray-400 leading-none">Nossa trajetória</span>
+                  </button>
+
+                  <button 
+                    onClick={() => { openInstitutionalPage('central-ajuda'); setIsMobileMenuOpen(false); }}
+                    className="flex flex-col items-start gap-1 py-3 px-3.5 rounded-xl border border-gray-100 hover:bg-gray-50 text-left transition-colors cursor-pointer"
+                  >
+                    <Sparkles className="w-4 h-4 text-amber-500" />
+                    <span className="text-[13px] font-bold text-gray-900 mt-1">Ajuda & FAQ</span>
+                    <span className="text-[9px] text-gray-400 leading-none">Dúvidas rápidas</span>
+                  </button>
+                </div>
+              </div>
+
+              {/* Consultoria VIP Premium Banner card inside menu */}
+              <div className="bg-gradient-to-br from-[#0A0D14] to-[#1C202F] p-4 rounded-2xl text-white relative overflow-hidden shadow-md">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-white/[0.02] rounded-full translate-x-8 -translate-y-8 pointer-events-none" />
+                <span className="inline-block bg-brand-blue/30 text-blue-200 border border-brand-blue/45 text-[8px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider mb-1.5">
+                  Consultoria V.I.P.
+                </span>
+                <h5 className="font-serif font-black text-white text-[13px] leading-tight mb-1">
+                  Dúvida sobre o produto ideal?
+                </h5>
+                <p className="text-white/60 text-[10px] leading-normal mb-3">
+                  Nossos curadores estão de plantão para desenhar seu projeto de sono ideal.
+                </p>
+                <button 
+                  onClick={() => { 
+                    setIsMobileMenuOpen(false); 
+                    openInstitutionalPage('fale-conosco'); 
+                  }}
+                  className="w-full py-2 bg-brand-blue hover:bg-[#154a80] text-white text-[11px] font-bold tracking-wider uppercase rounded-xl transition-all shadow-sm flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <MessageCircle className="w-3.5 h-3.5 fill-white" />
+                  Falar com Consultor
+                </button>
+              </div>
+            </div>
+
+            {/* Sticky Bottom Actions & Contact Info */}
+            <div className="p-4 bg-gray-50 border-t border-gray-100 space-y-3">
+              <div className="flex items-center justify-between text-[11px] text-gray-500 font-semibold px-1">
+                <div className="flex items-center gap-1.5">
+                  <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span>Showrooms Abertos</span>
+                </div>
+                <span>Seg a Sáb - 9h às 19h</span>
+              </div>
+              <div className="flex gap-2">
+                <a 
+                  href="tel:+5511999999999"
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-gray-200 bg-white text-gray-700 text-xs font-bold hover:bg-gray-100 transition-all text-center"
+                >
+                  <Phone className="w-3.5 h-3.5 text-gray-500" />
+                  Ligar Agora
+                </a>
+                <button 
+                  onClick={() => { setIsMobileMenuOpen(false); setShowLeadCapture(true); }}
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-brand-blue hover:bg-[#154a80] text-white text-xs font-bold transition-all text-center cursor-pointer shadow-sm"
+                >
+                  <MessageCircle className="w-3.5 h-3.5 fill-white" />
+                  Atendimento
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Institutional pages modal (Fale Conosco, Endereço, Sobre, Central de Ajuda, etc) */}
+      <InstitutionalModal
+        isOpen={institutionalModalOpen}
+        onClose={() => setInstitutionalModalOpen(false)}
+        activeTab={institutionalActiveTab}
+        setActiveTab={setInstitutionalActiveTab}
+      />
+
       
       {/* Features Block */}
       <section className="bg-white py-16 md:py-24 border-t border-gray-100">
@@ -2883,26 +3415,94 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
             {/* Links 1 */}
             <div className="flex flex-col">
               <h3 className="font-bold text-[13px] tracking-[0.15em] mb-8 text-white uppercase">Departamentos</h3>
-              <ul className="flex flex-col gap-4">
-                <li><a href="#" className="text-white/70 font-medium hover:text-white transition-colors text-[14px]">Móveis</a></li>
-                <li><a href="#" className="text-white/70 font-medium hover:text-white transition-colors text-[14px]">Decoração</a></li>
-                <li><a href="#" className="text-white/70 font-medium hover:text-white transition-colors text-[14px]">Iluminação</a></li>
-                <li><a href="#" className="text-white/70 font-medium hover:text-white transition-colors text-[14px]">Tapetes</a></li>
-                <li><a href="#" className="text-white/70 font-medium hover:text-white transition-colors text-[14px]">Exterior</a></li>
-                <li><a href="#" className="text-white/70 font-medium hover:text-white transition-colors text-[14px] flex items-center gap-2">Pronta Entrega <span className="bg-white/20 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase">Novo</span></a></li>
+              <ul className="flex flex-col gap-4 text-left">
+                <li>
+                  <button 
+                    onClick={() => handleSelectCategory("Móveis de\nMadeira")} 
+                    className="text-white/70 font-semibold hover:text-white transition-colors text-[14px] cursor-pointer bg-transparent border-none p-0 outline-none text-left"
+                  >
+                    Móveis de Madeira
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => handleSelectCategory("Estofados")} 
+                    className="text-white/70 font-semibold hover:text-white transition-colors text-[14px] cursor-pointer bg-transparent border-none p-0 outline-none text-left"
+                  >
+                    Estofados
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => handleSelectCategory("Camas")} 
+                    className="text-white/70 font-semibold hover:text-white transition-colors text-[14px] cursor-pointer bg-transparent border-none p-0 outline-none text-left"
+                  >
+                    Camas
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => handleSelectCategory("Travesseiros")} 
+                    className="text-white/70 font-semibold hover:text-white transition-colors text-[14px] cursor-pointer bg-transparent border-none p-0 outline-none text-left"
+                  >
+                    Travesseiros
+                  </button>
+                </li>
               </ul>
             </div>
 
             {/* Links 2 */}
             <div className="flex flex-col">
               <h3 className="font-bold text-[13px] tracking-[0.15em] mb-8 text-white uppercase">Atendimento</h3>
-              <ul className="flex flex-col gap-4">
-                <li><a href="#" className="text-white/70 font-medium hover:text-white transition-colors text-[14px]">Central de Ajuda</a></li>
-                <li><a href="#" className="text-white/70 font-medium hover:text-white transition-colors text-[14px]">Trocas e Devoluções</a></li>
-                <li><a href="#" className="text-white/70 font-medium hover:text-white transition-colors text-[14px]">Acompanhar Pedido</a></li>
-                <li><a href="#" className="text-white/70 font-medium hover:text-white transition-colors text-[14px]">Fale Conosco</a></li>
-                <li><a href="#" className="text-white/70 font-medium hover:text-white transition-colors text-[14px]">Política de Privacidade</a></li>
-                <li><a href="#" className="text-white/70 font-medium hover:text-white transition-colors text-[14px]">Termos de Uso</a></li>
+              <ul className="flex flex-col gap-4 text-left">
+                <li>
+                  <button 
+                    onClick={() => openInstitutionalPage('fale-conosco')} 
+                    className="text-white/70 font-semibold hover:text-white transition-colors text-[14px] cursor-pointer bg-transparent border-none p-0 outline-none text-left"
+                  >
+                    Fale Conosco
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => openInstitutionalPage('endereco')} 
+                    className="text-white/70 font-semibold hover:text-white transition-colors text-[14px] cursor-pointer bg-transparent border-none p-0 outline-none text-left"
+                  >
+                    Endereço
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => openInstitutionalPage('sobre')} 
+                    className="text-white/70 font-semibold hover:text-white transition-colors text-[14px] cursor-pointer bg-transparent border-none p-0 outline-none text-left"
+                  >
+                    Sobre
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => openInstitutionalPage('central-ajuda')} 
+                    className="text-white/70 font-semibold hover:text-white transition-colors text-[14px] cursor-pointer bg-transparent border-none p-0 outline-none text-left"
+                  >
+                    Central de Ajuda
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => openInstitutionalPage('politica')} 
+                    className="text-white/70 font-semibold hover:text-white transition-colors text-[14px] cursor-pointer bg-transparent border-none p-0 outline-none text-left"
+                  >
+                    Política de Privacidade
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => openInstitutionalPage('termos')} 
+                    className="text-white/70 font-semibold hover:text-white transition-colors text-[14px] cursor-pointer bg-transparent border-none p-0 outline-none text-left"
+                  >
+                    Termos de Uso
+                  </button>
+                </li>
               </ul>
             </div>
 

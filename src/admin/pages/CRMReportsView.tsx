@@ -1023,7 +1023,7 @@ export const CRMReportsView = ({ leads }: { leads: Lead[] }) => {
           <button 
             onClick={exportPDF} 
             disabled={exporting}
-            className="flex items-center gap-2 px-4 py-2 bg-[#0F172A] hover:bg-black text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2 bg-brand-blue hover:bg-brand-blue-hover text-white font-bold text-xs uppercase tracking-wider rounded-xl transition-all shadow-sm disabled:opacity-50 cursor-pointer"
             title="Exportar PDF de alta resolução"
           >
             {exporting ? <ArrowDownToLine className="w-4 h-4 animate-bounce text-blue-400" /> : <FileText className="w-4 h-4" />}
@@ -1033,29 +1033,29 @@ export const CRMReportsView = ({ leads }: { leads: Lead[] }) => {
       </div>
 
       {/* STÚDIO DE RELATÓRIOS EXECUTIVOS PERSONALIZADOS (POR VENDEDOR / MULTICRITÉRIO) */}
-      <div className="mb-8 bg-gradient-to-br from-[#0F172A] to-[#1E293B] rounded-3xl p-6 text-white shadow-xl shadow-slate-950/10 border border-slate-800/80 font-sans relative overflow-hidden">
+      <div className="mb-8 bg-gradient-to-br from-[#0c233f] via-[#0e2c50] to-[#133c6d] rounded-3xl p-6 text-white shadow-2xl shadow-[#0c233f]/30 border border-blue-900/30 font-sans relative overflow-hidden">
         {/* Subtle background visual ornaments */}
-        <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-slate-800/20 to-transparent rounded-full blur-2xl pointer-events-none" />
-        <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-gradient-to-tr from-[#F59E0B]/5 to-transparent rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-white/[0.03] to-transparent rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-gradient-to-tr from-blue-400/5 to-transparent rounded-full blur-2xl pointer-events-none" />
 
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/60 pb-5 relative z-10">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-blue-900/55 pb-5 relative z-10">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#F59E0B] to-[#D97706] flex shrink-0 items-center justify-center text-slate-950 shadow-lg shadow-amber-500/10 border border-amber-400/20">
-              <Sparkles className="w-6 h-6 text-slate-950 stroke-[2.3]" />
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#1e40af] to-[#133c6d] flex shrink-0 items-center justify-center text-white shadow-lg border border-white/10">
+              <Sparkles className="w-6 h-6 text-white stroke-[2.3]" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black text-amber-400 bg-amber-400/10 px-2.5 py-0.5 rounded-full uppercase tracking-[0.15em] border border-amber-400/10">
+                <span className="text-[10px] font-black text-blue-200 bg-blue-950/60 px-2.5 py-0.5 rounded-full uppercase tracking-[0.12em] border border-blue-500/20">
                   Business Intelligence
                 </span>
-                <span className="text-[10px] font-bold text-slate-400">
+                <span className="text-[10px] font-bold text-blue-300/80">
                   v2.8 Premium
                 </span>
               </div>
               <h3 className="text-lg font-black text-white mt-1.5 leading-tight tracking-tight">
                 Estúdio de Performance & Relatórios Personalizados por Vendedor
               </h3>
-              <p className="text-xs text-slate-400 mt-1">
+              <p className="text-xs text-blue-200/80 mt-1">
                 Selecione um vendedor, filtre os dados desejados, insira anotações de liderança e gere um PDF certificado pelo CRM.
               </p>
             </div>
@@ -1063,7 +1063,7 @@ export const CRMReportsView = ({ leads }: { leads: Lead[] }) => {
           
           <button
             onClick={() => setIsBuilderOpen(!isBuilderOpen)}
-            className="self-start md:self-auto px-4 py-2 border border-slate-700/80 hover:border-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 rounded-xl text-xs font-black text-slate-300 hover:text-white uppercase tracking-wider transition-all cursor-pointer bg-slate-900/60 backdrop-blur-xs flex items-center gap-1.5"
+            className="self-start md:self-auto px-4 py-2 border border-blue-800/40 hover:border-blue-400 focus:outline-none focus:ring-2 focus:ring-[#133c6d] rounded-xl text-xs font-black text-blue-100 hover:text-white uppercase tracking-wider transition-all cursor-pointer bg-blue-950/80 backdrop-blur-xs flex items-center gap-1.5"
           >
             {isBuilderOpen ? (
               <>
@@ -1071,7 +1071,7 @@ export const CRMReportsView = ({ leads }: { leads: Lead[] }) => {
               </>
             ) : (
               <>
-                <Zap className="w-3.5 h-3.5 text-amber-400" /> Customizar Relatório
+                <Zap className="w-3.5 h-3.5 text-blue-300" /> Customizar Relatório
               </>
             )}
           </button>
@@ -1081,20 +1081,20 @@ export const CRMReportsView = ({ leads }: { leads: Lead[] }) => {
           <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10 transition-all duration-300">
             {/* LEFT COLUMN: Configurations */}
             <div className="lg:col-span-7 space-y-5">
-              <h4 className="text-[10px] font-black uppercase text-amber-500 tracking-widest flex items-center gap-1.5 border-b border-slate-800 pb-1.5">
-                <UserCheck className="w-3.5 h-3.5" /> 1. Parâmetros & Notas do Relatório
+              <h4 className="text-[11px] font-black uppercase text-sky-100 tracking-wider flex items-center gap-1.5 border-b border-blue-800/40 pb-2">
+                <UserCheck className="w-3.5 h-3.5 text-blue-300" /> 1. Parâmetros & Notas do Relatório
               </h4>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2">
+                  <label className="block text-[11px] font-bold text-blue-100 uppercase tracking-wider mb-2">
                     Consultor de Vendas Alvo:
                   </label>
                   <div className="relative">
                     <select
                       value={selectedBuilderSeller}
                       onChange={(e) => setSelectedBuilderSeller(e.target.value)}
-                      className="w-full bg-slate-900/90 text-slate-100 border border-slate-755 focus:border-amber-500 p-3 rounded-xl text-xs font-extrabold outline-none appearance-none cursor-pointer transition-colors"
+                      className="w-full bg-blue-950/95 text-white border border-blue-800/60 focus:border-blue-400 p-3 rounded-xl text-xs font-bold outline-none appearance-none cursor-pointer transition-colors shadow-inner"
                     >
                       <option value="Todos">Todos os Consultores (Geral)</option>
                       {allAssignees.map(item => (
@@ -1102,14 +1102,14 @@ export const CRMReportsView = ({ leads }: { leads: Lead[] }) => {
                       ))}
                       <option value="Sem Responsável">Sem Responsável</option>
                     </select>
-                    <div className="pointer-events-none absolute right-3.5 top-3.5 text-slate-400">
-                      <Zap className="w-3.5 h-3.5 col-amber-400" />
+                    <div className="pointer-events-none absolute right-3.5 top-3.5 text-blue-300">
+                      <Zap className="w-3.5 h-3.5" />
                     </div>
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2">
+                  <label className="block text-[11px] font-bold text-blue-100 uppercase tracking-wider mb-2">
                     Título Oficial do Documento:
                   </label>
                   <input
@@ -1117,17 +1117,17 @@ export const CRMReportsView = ({ leads }: { leads: Lead[] }) => {
                     value={customReportTitle}
                     onChange={(e) => setCustomReportTitle(e.target.value)}
                     placeholder="Ex: Cédula de Desempenho e Metas"
-                    className="w-full bg-slate-900/90 text-slate-100 placeholder-slate-500 border border-slate-755 focus:border-amber-500 p-3 rounded-xl text-xs font-bold outline-none transition-colors"
+                    className="w-full bg-blue-950/95 text-white placeholder-blue-300/60 border border-blue-800/60 focus:border-blue-400 p-3 rounded-xl text-xs font-bold outline-none transition-colors shadow-inner"
                   />
                 </div>
               </div>
 
               <div>
                 <div className="flex items-center justify-between mb-2">
-                  <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider">
+                  <label className="block text-[11px] font-bold text-blue-100 uppercase tracking-wider">
                     Parecer de Feedback do Gestor (Coaching):
                   </label>
-                  <span className="text-[10px] font-bold text-amber-400/80 italic">
+                  <span className="text-[10px] font-bold text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20 italic tracking-wide">
                     Aparecerá destacado em caixa no PDF
                   </span>
                 </div>
@@ -1136,7 +1136,7 @@ export const CRMReportsView = ({ leads }: { leads: Lead[] }) => {
                   onChange={(e) => setAdminFeedback(e.target.value)}
                   placeholder="Escreva anotações reais de orientação sobre conversões, postura com novos leads e metas do showroom para este consultor..."
                   rows={3}
-                  className="w-full bg-slate-900/90 text-slate-100 placeholder-slate-500 border border-slate-755 focus:border-amber-500 p-3 rounded-xl text-xs font-medium outline-none resize-none transition-colors"
+                  className="w-full bg-blue-950/95 text-white placeholder-blue-300/60 border border-blue-800/60 focus:border-blue-400 p-3 rounded-xl text-xs font-medium outline-none resize-none transition-colors shadow-inner"
                 />
               </div>
             </div>
@@ -1144,113 +1144,113 @@ export const CRMReportsView = ({ leads }: { leads: Lead[] }) => {
             {/* RIGHT COLUMN: Document Modules Checks */}
             <div className="lg:col-span-5 flex flex-col justify-between space-y-6">
               <div className="space-y-4">
-                <h4 className="text-[10px] font-black uppercase text-amber-500 tracking-widest flex items-center gap-1.5 border-b border-slate-800 pb-1.5">
-                  <FileCode className="w-3.5 h-3.5" /> 2. Módulos & Seções do PDF
+                <h4 className="text-[11px] font-black uppercase text-sky-100 tracking-wider flex items-center gap-1.5 border-b border-blue-800/40 pb-2">
+                  <FileCode className="w-3.5 h-3.5 text-blue-300" /> 2. Módulos & Seções do PDF
                 </h4>
 
                 <div className="space-y-2.5">
                   <button
                     onClick={() => setIncludeKPIs(!includeKPIs)}
-                    className={`w-full flex items-center justify-between p-3 rounded-xl border text-xs font-bold transition-all ${
+                    className={`w-full flex items-center justify-between p-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                       includeKPIs
-                        ? 'bg-amber-400/10 border-amber-500/50 text-white shadow-xs'
-                        : 'bg-slate-900/40 border-slate-800/80 text-slate-400 hover:border-slate-700/80'
+                        ? 'bg-blue-500/20 border-blue-400/50 text-white shadow-sm shadow-blue-950/20'
+                        : 'bg-blue-950/40 border-blue-900/50 text-blue-200 hover:border-blue-700/60 hover:text-white'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
-                      <div className={`p-1 rounded-lg ${includeKPIs ? 'bg-amber-400 text-slate-950' : 'bg-slate-800'}`}>
+                      <div className={`p-1.5 rounded-lg transition-colors ${includeKPIs ? 'bg-[#133c6d] text-white border border-blue-400/30' : 'bg-blue-950/80 text-blue-300'}`}>
                         <Zap className="w-3.5 h-3.5" />
                       </div>
-                      <span>Resumo dos Indicadores Principais (KPIs)</span>
+                      <span className="font-semibold">Resumo dos Indicadores Principais (KPIs)</span>
                     </div>
                     {includeKPIs ? (
-                      <Check className="w-4 h-4 text-amber-400 stroke-[3]" />
+                      <Check className="w-4 h-4 text-blue-200 stroke-[3.5]" />
                     ) : (
-                      <div className="w-4 h-4 rounded-full border border-slate-700" />
+                      <div className="w-4 h-4 rounded-full border border-blue-800" />
                     )}
                   </button>
 
                   <button
                     onClick={() => setIncludeWonLeads(!includeWonLeads)}
-                    className={`w-full flex items-center justify-between p-3 rounded-xl border text-xs font-bold transition-all ${
+                    className={`w-full flex items-center justify-between p-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                       includeWonLeads
-                        ? 'bg-amber-400/10 border-amber-500/50 text-white shadow-xs'
-                        : 'bg-slate-900/40 border-slate-800/80 text-slate-400 hover:border-slate-700/80'
+                        ? 'bg-blue-500/20 border-blue-400/50 text-white shadow-sm shadow-blue-950/20'
+                        : 'bg-blue-950/40 border-blue-900/50 text-blue-200 hover:border-blue-700/60 hover:text-white'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
-                      <div className={`p-1 rounded-lg ${includeWonLeads ? 'bg-amber-400 text-slate-950' : 'bg-slate-800'}`}>
+                      <div className={`p-1.5 rounded-lg transition-colors ${includeWonLeads ? 'bg-[#133c6d] text-white border border-blue-400/30' : 'bg-blue-950/80 text-blue-300'}`}>
                         <Award className="w-3.5 h-3.5" />
                       </div>
-                      <span>Listagem de Vendas Concluídas (Receitas)</span>
+                      <span className="font-semibold">Listagem de Vendas Concluídas (Receitas)</span>
                     </div>
                     {includeWonLeads ? (
-                      <Check className="w-4 h-4 text-amber-400 stroke-[3]" />
+                      <Check className="w-4 h-4 text-blue-200 stroke-[3.5]" />
                     ) : (
-                      <div className="w-4 h-4 rounded-full border border-slate-700" />
+                      <div className="w-4 h-4 rounded-full border border-blue-800" />
                     )}
                   </button>
 
                   <button
                     onClick={() => setIncludeActiveLeads(!includeActiveLeads)}
-                    className={`w-full flex items-center justify-between p-3 rounded-xl border text-xs font-bold transition-all ${
+                    className={`w-full flex items-center justify-between p-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                       includeActiveLeads
-                        ? 'bg-amber-400/10 border-amber-500/50 text-white shadow-xs'
-                        : 'bg-slate-900/40 border-slate-800/80 text-slate-400 hover:border-slate-700/80'
+                        ? 'bg-blue-500/20 border-blue-400/50 text-white shadow-sm shadow-blue-950/20'
+                        : 'bg-blue-950/40 border-blue-900/50 text-blue-200 hover:border-blue-700/60 hover:text-white'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
-                      <div className={`p-1 rounded-lg ${includeActiveLeads ? 'bg-amber-400 text-slate-950' : 'bg-slate-800'}`}>
-                        <RefreshCw className="w-3.5 h-3.5 text-slate-950" />
+                      <div className={`p-1.5 rounded-lg transition-colors ${includeActiveLeads ? 'bg-[#133c6d] text-white border border-blue-400/30' : 'bg-blue-950/80 text-blue-300'}`}>
+                        <RefreshCw className="w-3.5 h-3.5" />
                       </div>
-                      <span>Metas do Pipeline de Clientes de Atendimento</span>
+                      <span className="font-semibold">Metas do Pipeline de Clientes de Atendimento</span>
                     </div>
                     {includeActiveLeads ? (
-                      <Check className="w-4 h-4 text-amber-400 stroke-[3]" />
+                      <Check className="w-4 h-4 text-blue-200 stroke-[3.5]" />
                     ) : (
-                      <div className="w-4 h-4 rounded-full border border-slate-700" />
+                      <div className="w-4 h-4 rounded-full border border-blue-800" />
                     )}
                   </button>
 
                   <button
                     onClick={() => setIncludeCoachingAI(!includeCoachingAI)}
-                    className={`w-full flex items-center justify-between p-3 rounded-xl border text-xs font-bold transition-all ${
+                    className={`w-full flex items-center justify-between p-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                       includeCoachingAI
-                        ? 'bg-amber-400/10 border-amber-500/50 text-white shadow-xs'
-                        : 'bg-slate-900/40 border-slate-800/80 text-slate-400 hover:border-slate-700/80'
+                        ? 'bg-blue-500/20 border-blue-400/50 text-white shadow-sm shadow-blue-950/20'
+                        : 'bg-blue-950/40 border-blue-900/50 text-blue-200 hover:border-blue-700/60 hover:text-white'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
-                      <div className={`p-1 rounded-lg ${includeCoachingAI ? 'bg-amber-400 text-slate-950' : 'bg-slate-800'}`}>
+                      <div className={`p-1.5 rounded-lg transition-colors ${includeCoachingAI ? 'bg-[#133c6d] text-white border border-blue-400/30' : 'bg-blue-950/80 text-blue-300'}`}>
                         <Sparkles className="w-3.5 h-3.5" />
                       </div>
-                      <span>Prescrição Comercial por Inteligência Artificial</span>
+                      <span className="font-semibold">Prescrição Comercial por Inteligência Artificial</span>
                     </div>
                     {includeCoachingAI ? (
-                      <Check className="w-4 h-4 text-amber-400 stroke-[3]" />
+                      <Check className="w-4 h-4 text-blue-200 stroke-[3.5]" />
                     ) : (
-                      <div className="w-4 h-4 rounded-full border border-slate-700" />
+                      <div className="w-4 h-4 rounded-full border border-blue-800" />
                     )}
                   </button>
 
                   <button
                     onClick={() => setIncludeSignature(!includeSignature)}
-                    className={`w-full flex items-center justify-between p-3 rounded-xl border text-xs font-bold transition-all ${
+                    className={`w-full flex items-center justify-between p-3 rounded-xl border text-xs font-bold transition-all cursor-pointer ${
                       includeSignature
-                        ? 'bg-amber-400/10 border-amber-500/50 text-white shadow-xs'
-                        : 'bg-slate-900/40 border-slate-800/80 text-slate-400 hover:border-slate-700/80'
+                        ? 'bg-blue-500/20 border-blue-400/50 text-white shadow-sm shadow-blue-950/20'
+                        : 'bg-blue-950/40 border-blue-900/50 text-blue-200 hover:border-blue-700/60 hover:text-white'
                     }`}
                   >
                     <div className="flex items-center gap-2.5">
-                      <div className={`p-1 rounded-lg ${includeSignature ? 'bg-amber-400 text-slate-950' : 'bg-slate-800'}`}>
+                      <div className={`p-1.5 rounded-lg transition-colors ${includeSignature ? 'bg-[#133c6d] text-white border border-blue-400/30' : 'bg-blue-950/80 text-blue-300'}`}>
                         <Shield className="w-3.5 h-3.5" />
                       </div>
-                      <span>Assinatura Digital de Validação CRM</span>
+                      <span className="font-semibold">Assinatura Digital de Validação CRM</span>
                     </div>
                     {includeSignature ? (
-                      <Check className="w-4 h-4 text-amber-400 stroke-[3]" />
+                      <Check className="w-4 h-4 text-blue-200 stroke-[3.5]" />
                     ) : (
-                      <div className="w-4 h-4 rounded-full border border-slate-700" />
+                      <div className="w-4 h-4 rounded-full border border-blue-800" />
                     )}
                   </button>
                 </div>
@@ -1258,35 +1258,35 @@ export const CRMReportsView = ({ leads }: { leads: Lead[] }) => {
 
               {/* ACTION: COMPILE PDF BUTTON */}
               <div className="pt-2">
-                <div className="flex justify-between items-center text-[10px] text-slate-400 mb-2.5 font-mono px-1">
-                  <span>Filtro de Tempo Ativo: {getDateFilterLabel(dateFilter)}</span>
-                  <span>Registros Alvo: {
+                <div className="flex justify-between items-center text-[10px] text-blue-200 mb-2.5 font-mono px-1">
+                  <span>Filtro de Tempo Ativo: <span className="text-white font-bold">{getDateFilterLabel(dateFilter)}</span></span>
+                  <span>Registros Alvo: <span className="text-white font-bold">{
                     filteredLeads.filter(l => 
                       selectedBuilderSeller === 'Todos' || ((l as any).assignee || 'Sem Responsável') === selectedBuilderSeller
                     ).length
-                  } leads</span>
+                  } leads</span></span>
                 </div>
 
                 <button
                   onClick={exportCustomPremiumPDF}
-                  className="w-full py-4 bg-gradient-to-r from-amber-400 via-amber-500 to-[#D97706] hover:from-amber-300 hover:to-amber-500 text-slate-950 font-black text-xs uppercase tracking-[0.14em] rounded-2xl shadow-xl shadow-amber-500/10 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer border border-amber-300/30"
+                  className="w-full py-4 bg-[#133c6d] hover:bg-[#1c5394] text-white font-extrabold text-xs uppercase tracking-[0.14em] rounded-2xl shadow-xl shadow-blue-900/35 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer border border-blue-400/20 hover:border-blue-400/40"
                 >
-                  <FileText className="w-4 h-4 text-slate-950 stroke-[2.3]" />
+                  <FileText className="w-4 h-4 text-white stroke-[2.3]" />
                   Gerar Relatório de Desempenho Executivo (PDF)
                 </button>
               </div>
             </div>
           </div>
         ) : (
-          <div className="mt-4 flex items-center justify-between bg-slate-900/40 p-3.5 rounded-2xl border border-slate-800/50">
+          <div className="mt-4 flex items-center justify-between bg-blue-950/50 p-3.5 rounded-2xl border border-blue-900/40">
             <div className="flex items-center gap-3">
-              <Zap className="w-4 h-4 text-amber-400" />
-              <p className="text-xs text-slate-300 md:pr-10">
+              <Zap className="w-4 h-4 text-blue-400" />
+              <p className="text-xs text-blue-200 md:pr-10">
                 O Estúdio de Relatórios por Consultor está minimizado. Clique no botão ao lado para configurar relatórios customizados, dar feedback e baixar PDFs.
               </p>
             </div>
-            <p className="text-[10px] font-mono text-slate-500 whitespace-nowrap hidden sm:block">
-              Vendedor ativo: <span className="font-bold text-amber-400">{selectedBuilderSeller === 'Todos' ? 'Geral' : selectedBuilderSeller}</span>
+            <p className="text-[10px] font-mono text-blue-300/80 whitespace-nowrap hidden sm:block">
+              Vendedor ativo: <span className="font-bold text-white bg-blue-900/60 px-2 py-0.5 rounded-md border border-blue-700/20">{selectedBuilderSeller === 'Todos' ? 'Geral' : selectedBuilderSeller}</span>
             </p>
           </div>
         )}
