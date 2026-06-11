@@ -67,9 +67,9 @@ export default function AdminDashboard({ onLogout, onBackToSite }: { onLogout: (
     <div className="flex h-screen bg-[#F8F9FA] text-[#0F172A] font-sans selection:bg-brand-blue selection:text-white overflow-hidden relative">
       {/* Mobile Top Bar */}
       <div className="lg:hidden flex items-center justify-between bg-white border-b border-gray-100 p-4 absolute top-0 left-0 right-0 z-40">
-        <div className="flex items-center gap-1.5">
-          <Logo className="h-8 md:h-10 w-auto" />
-          <span className="text-brand-blue font-light italic text-xs tracking-wider uppercase opacity-80">Admin</span>
+        <div className="flex flex-col text-left">
+          <span className="text-[#0F172A] font-black text-xs uppercase tracking-widest leading-none font-sans">Sono & Cia</span>
+          <span className="text-amber-600 font-black text-[9px] uppercase tracking-wider leading-none mt-1.5">CRM Premium</span>
         </div>
         <div className="flex items-center gap-2">
           <button onClick={toggleFullscreen} className="p-2 rounded-xl text-gray-400 hover:text-brand-blue hover:bg-brand-blue/10 transition-colors" title="Tela Cheia">
@@ -89,10 +89,12 @@ export default function AdminDashboard({ onLogout, onBackToSite }: { onLogout: (
       {/* Sidebar */}
       <aside className={`fixed lg:static top-0 bottom-0 left-0 bg-white border-r border-gray-100 flex flex-col transition-transform duration-300 z-50 w-64 ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}`}>
         <div className="p-6 flex items-center justify-between border-b border-gray-50 h-[72px]">
-           <div className="flex items-center gap-1.5">
-              <Logo className="h-8 md:h-10 w-auto" />
-             <span className="text-brand-blue font-light italic text-xs tracking-wider uppercase opacity-80">Admin</span>
-             <span className="relative flex h-2 w-2 ml-1 hidden lg:flex" title="Sistema Online">
+           <div className="flex items-center gap-2">
+             <div className="flex flex-col text-left">
+               <span className="text-slate-900 font-black text-sm uppercase tracking-widest leading-none font-sans">Sono & Cia</span>
+               <span className="text-amber-500 font-black text-[10px] uppercase tracking-[0.16em] leading-none mt-1.5">CRM Premium</span>
+             </div>
+             <span className="relative flex h-2 w-2 ml-1.5 hidden lg:flex" title="Sistema Online">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
              </span>

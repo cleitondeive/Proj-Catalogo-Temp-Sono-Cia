@@ -51,6 +51,17 @@ export const CRMReportsView = ({ leads }: { leads: Lead[] }) => {
   const [selectedSellerForAvatar, setSelectedSellerForAvatar] = useState<string | null>(null);
   const [avatarInputUrl, setAvatarInputUrl] = useState('');
 
+  // States for the Premium Custom Report Builder
+  const [isBuilderOpen, setIsBuilderOpen] = useState(true);
+  const [selectedBuilderSeller, setSelectedBuilderSeller] = useState<string>('Todos');
+  const [includeKPIs, setIncludeKPIs] = useState<boolean>(true);
+  const [includeActiveLeads, setIncludeActiveLeads] = useState<boolean>(true);
+  const [includeWonLeads, setIncludeWonLeads] = useState<boolean>(true);
+  const [includeCoachingAI, setIncludeCoachingAI] = useState<boolean>(true);
+  const [includeSignature, setIncludeSignature] = useState<boolean>(true);
+  const [adminFeedback, setAdminFeedback] = useState<string>('');
+  const [customReportTitle, setCustomReportTitle] = useState<string>('Dossiê de Performance Comercial');
+
   const saveSellerAvatar = (sellerName: string, url: string) => {
     const updated = { ...localAvatars, [sellerName]: url };
     setLocalAvatars(updated);
@@ -602,6 +613,364 @@ export const CRMReportsView = ({ leads }: { leads: Lead[] }) => {
     }
   };
 
+  // High-End Custom Premium PDF Report Builder
+  const exportCustomPremiumPDF = () => {
+    const sellerName = selectedBuilderSeller;
+    
+    // Filter leads for the selected salesperson
+    const sellerLeads = filteredLeads.filter(l => 
+      sellerName === 'Todos' || ((l as any).assignee || 'Sem Responsável') === sellerName
+    );
+    
+    const sWon = sellerLeads.filter(l => l.status === 'Venda Ganha');
+    const sLost = sellerLeads.filter(l => l.status === 'Venda Perdida' || l.status === 'Cancelado');
+    const sOpen = sellerLeads.filter(l => !['Venda Ganha', 'Venda Perdida', 'Cancelado'].includes(l.status));
+    
+    const totalSpentSum = sWon.reduce((acc, l) => acc + (l.totalSpent || 0), 0);
+    const estimatedValueSum = sOpen.reduce((acc, l) => acc + (l.estimatedValue || l.totalSpent || 0), 0);
+    const totalTreated = sellerLeads.length;
+    const cxRate = totalTreated > 0 ? Math.round((sWon.length / totalTreated) * 100) : 0;
+    
+    try {
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4'
+      });
+      const pageWidth = doc.internal.pageSize.getWidth();
+      const pageHeight = doc.internal.pageSize.getHeight();
+      
+      let posY = 15;
+      
+      const drawFrame = () => {
+        // High-end elegant borders
+        doc.setDrawColor(15, 23, 42); // slate navy
+        doc.setLineWidth(0.4);
+        doc.rect(8, 8, pageWidth - 16, pageHeight - 16);
+        
+        // Charcoal header banner line
+        doc.setFillColor(15, 23, 42);
+        doc.rect(8, 8, pageWidth - 16, 4, 'F');
+        
+        // Deep gold/bronze border line
+        doc.setFillColor(217, 119, 6);
+        doc.rect(8, 12, pageWidth - 16, 1.2, 'F');
+      };
+      
+      const checkPageBreak = (neededHeight: number) => {
+        if (posY + neededHeight > pageHeight - 18) {
+          doc.addPage();
+          drawFrame();
+          posY = 20;
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(7.5);
+          doc.setTextColor(148, 163, 184);
+          doc.text(`Dossiê de Performance Comercial • Consultor: ${sellerName} • Página Adicional`, 12, 17);
+          doc.line(12, 19, pageWidth - 12, 19);
+          posY = 25;
+          return true;
+        }
+        return false;
+      };
+      
+      drawFrame();
+      
+      // Header Banner Section
+      doc.setFillColor(15, 23, 42);
+      doc.rect(12, 18, pageWidth - 24, 38, 'F');
+      
+      // Title
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(16);
+      doc.text(customReportTitle.toUpperCase(), 18, 29);
+      
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(8);
+      doc.setTextColor(217, 119, 6);
+      doc.text("EXECUTIVE PERFORMANCE ANALYSIS • SONO & CIA PREMIUM", 18, 34);
+      
+      doc.setFontSize(9.5);
+      doc.setTextColor(203, 213, 225);
+      doc.text(`Consultor Avaliado: ${sellerName === 'Todos' ? 'Visão Consolidada' : sellerName}`, 18, 43);
+      doc.text(`Intervalo Comercial: ${getDateFilterLabel(dateFilter).toUpperCase()}`, 18, 48);
+      
+      // Right side metadata
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(8);
+      doc.text("AUDITORIA CORPORATIVA", pageWidth - 70, 28);
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7.5);
+      doc.setTextColor(148, 163, 184);
+      doc.text(`Data: ${new Date().toLocaleDateString('pt-BR')}`, pageWidth - 70, 33);
+      doc.text(`Hora: ${new Date().toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}`, pageWidth - 70, 37);
+      doc.text(`Código ID: #AUD-${Math.floor(100000 + Math.random() * 900000)}`, pageWidth - 70, 41);
+      doc.text("Sono & Cia - Inteligência de Vendas", pageWidth - 70, 45);
+      
+      posY = 64;
+      
+      // Admin Notes / Observations
+      if (adminFeedback.trim()) {
+        checkPageBreak(35);
+        doc.setFillColor(254, 251, 232); // soft beautiful warm beige callout
+        doc.rect(12, posY, pageWidth - 24, 25, 'F');
+        doc.setDrawColor(251, 191, 36); 
+        doc.rect(12, posY, pageWidth - 24, 25, 'S');
+        
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(9);
+        doc.setTextColor(180, 83, 9);
+        doc.text("PARECER E DIRETRIZES DA GESTÃO DE OPERAÇÕES", 16, posY + 6);
+        
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8.5);
+        doc.setTextColor(51, 65, 85);
+        const feedbackLines = doc.splitTextToSize(adminFeedback, pageWidth - 32);
+        doc.text(feedbackLines, 16, posY + 13);
+        posY += 32;
+      }
+      
+      // KPI Widgets Box
+      if (includeKPIs) {
+        checkPageBreak(30);
+        
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(10.5);
+        doc.setTextColor(15, 23, 42);
+        doc.text("DESEMPENHO DO FILTRO INTEGRADO", 12, posY);
+        posY += 4;
+        doc.setDrawColor(241, 245, 249);
+        doc.line(12, posY, pageWidth - 12, posY);
+        posY += 6;
+        
+        const cardColWidth = (pageWidth - 24 - 12) / 4;
+        
+        // Faturamento
+        doc.setFillColor(240, 253, 250);
+        doc.rect(12, posY, cardColWidth, 18, 'F');
+        doc.setDrawColor(204, 251, 241);
+        doc.rect(12, posY, cardColWidth, 18, 'S');
+        doc.setFontSize(7.5);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(13, 148, 136);
+        doc.text("FATURAMENTO FECHADO", 14, posY + 5);
+        doc.setFontSize(9.5);
+        doc.setTextColor(15, 23, 42);
+        doc.text(`R$ ${totalSpentSum.toLocaleString('pt-BR', {minimumFractionDigits: 2})}`, 14, posY + 12);
+        
+        // Fechamentos
+        doc.setFillColor(240, 253, 244);
+        doc.rect(12 + cardColWidth + 4, posY, cardColWidth, 18, 'F');
+        doc.setDrawColor(220, 252, 231);
+        doc.rect(12 + cardColWidth + 4, posY, cardColWidth, 18, 'S');
+        doc.setFontSize(7.5);
+        doc.setTextColor(22, 163, 74);
+        doc.text("VENDAS GANHAS", 12 + cardColWidth + 7, posY + 5);
+        doc.setFontSize(11);
+        doc.setTextColor(21, 128, 61);
+        doc.text(`${sWon.length}`, 12 + cardColWidth + 7, posY + 12);
+        
+        // Em Aberto
+        doc.setFillColor(254, 243, 199);
+        doc.rect(12 + (cardColWidth * 2) + 8, posY, cardColWidth, 18, 'F');
+        doc.setDrawColor(253, 230, 138);
+        doc.rect(12 + (cardColWidth * 2) + 8, posY, cardColWidth, 18, 'S');
+        doc.setFontSize(7.5);
+        doc.setTextColor(217, 119, 6);
+        doc.text("NEGOCIAÇÕES ATIVAS", 12 + (cardColWidth * 2) + 11, posY + 5);
+        doc.setFontSize(11);
+        doc.setTextColor(180, 83, 9);
+        doc.text(`${sOpen.length}`, 12 + (cardColWidth * 2) + 11, posY + 12);
+        
+        // Taxa Conversão
+        doc.setFillColor(239, 246, 255);
+        doc.rect(12 + (cardColWidth * 3) + 12, posY, cardColWidth, 18, 'F');
+        doc.setDrawColor(191, 219, 254);
+        doc.rect(12 + (cardColWidth * 3) + 12, posY, cardColWidth, 18, 'S');
+        doc.setFontSize(7.5);
+        doc.setTextColor(37, 99, 235);
+        doc.text("TAXA CONVERSÃO", 12 + (cardColWidth * 3) + 15, posY + 5);
+        doc.setFontSize(11);
+        doc.setTextColor(29, 78, 216);
+        doc.text(`${cxRate}%`, 12 + (cardColWidth * 3) + 15, posY + 12);
+        
+        posY += 26;
+      }
+      
+      // Won Vendas Section
+      if (includeWonLeads && sWon.length > 0) {
+        checkPageBreak(30);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(10.5);
+        doc.setTextColor(15, 23, 42);
+        doc.text(`HISTÓRICO DETALHADO DE RECEITAS E FECHAMENTOS COMERCIAIS (${sWon.length})`, 12, posY);
+        posY += 4;
+        doc.setDrawColor(241, 245, 249);
+        doc.line(12, posY, pageWidth - 12, posY);
+        posY += 5;
+        
+        // Header
+        doc.setFillColor(248, 250, 252);
+        doc.rect(12, posY, pageWidth - 24, 7, 'F');
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(71, 85, 105);
+        doc.text("CLIENTE BENEFICIADO", 14, posY + 4.5);
+        doc.text("TELEFONE CONTATO", pageWidth - 120, posY + 4.5);
+        doc.text("VALOR GANHO", pageWidth - 70, posY + 4.5);
+        doc.text("DATA DO ACORDO", pageWidth - 42, posY + 4.5);
+        
+        posY += 7;
+        
+        sWon.forEach((lead, i) => {
+          checkPageBreak(12);
+          doc.setFillColor(i % 2 === 0 ? 255 : 252, i % 2 === 0 ? 255 : 253, i % 2 === 0 ? 255 : 254);
+          doc.rect(12, posY, pageWidth - 24, 8, 'F');
+          
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(8);
+          doc.setTextColor(51, 65, 85);
+          doc.text(lead.name.substring(0, 32), 14, posY + 5);
+          doc.text(lead.phone, pageWidth - 120, posY + 5);
+          doc.text(`R$ ${ (lead.totalSpent || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2}) }`, pageWidth - 70, posY + 5);
+          doc.text(new Date(lead.updatedAt || lead.createdAt).toLocaleDateString('pt-BR'), pageWidth - 42, posY + 5);
+          posY += 8;
+        });
+        
+        posY += 4;
+      }
+      
+      // Active Leads Pipeline list
+      if (includeActiveLeads && sOpen.length > 0) {
+        checkPageBreak(30);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(10.5);
+        doc.setTextColor(15, 23, 42);
+        doc.text(`NEGOCIAÇÕES ATIVAS / POTENCIAIS CLIENTES EM ATENDIMENTO (${sOpen.length})`, 12, posY);
+        posY += 4;
+        doc.setDrawColor(241, 245, 249);
+        doc.line(12, posY, pageWidth - 12, posY);
+        posY += 5;
+        
+        // Header
+        doc.setFillColor(248, 250, 252);
+        doc.rect(12, posY, pageWidth - 24, 7, 'F');
+        doc.setFontSize(8);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(71, 85, 105);
+        doc.text("CLIENTE EM NEGÓCIO", 14, posY + 4.5);
+        doc.text("CANAL / ORIGEM", pageWidth - 120, posY + 4.5);
+        doc.text("VALOR ESTIMADO", pageWidth - 70, posY + 4.5);
+        doc.text("ÚLTIMO CONTATO", pageWidth - 42, posY + 4.5);
+        
+        posY += 7;
+        
+        sOpen.forEach((lead, i) => {
+          checkPageBreak(12);
+          doc.setFillColor(i % 2 === 0 ? 255 : 252, i % 2 === 0 ? 255 : 253, i % 2 === 0 ? 255 : 254);
+          doc.rect(12, posY, pageWidth - 24, 8, 'F');
+          
+          doc.setFont('helvetica', 'normal');
+          doc.setFontSize(8);
+          doc.setTextColor(51, 65, 85);
+          doc.text(lead.name.substring(0, 32), 14, posY + 5);
+          doc.text(lead.source || 'Website', pageWidth - 120, posY + 5);
+          doc.text(`R$ ${ (lead.estimatedValue || lead.totalSpent || 0).toLocaleString('pt-BR', {minimumFractionDigits: 2}) }`, pageWidth - 70, posY + 5);
+          doc.text(new Date(lead.updatedAt || lead.createdAt).toLocaleDateString('pt-BR'), pageWidth - 42, posY + 5);
+          posY += 8;
+        });
+        
+        posY += 4;
+      }
+      
+      // Auto AI analysis advice
+      if (includeCoachingAI) {
+        checkPageBreak(45);
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(10.5);
+        doc.setTextColor(15, 23, 42);
+        doc.text("ANÁLISE COGNITIVA & RECOMENDAÇÕES EXECUTIVAS", 12, posY);
+        posY += 4;
+        doc.setDrawColor(241, 245, 249);
+        doc.line(12, posY, pageWidth - 12, posY);
+        posY += 5;
+        
+        doc.setFillColor(243, 244, 246);
+        doc.rect(12, posY, pageWidth - 24, 30, 'F');
+        doc.setDrawColor(209, 213, 219);
+        doc.rect(12, posY, pageWidth - 24, 30, 'S');
+        
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(8);
+        doc.setTextColor(31, 41, 55);
+        doc.text("PRESCRIÇÃO AUTOMÁTICA DE VENDAS (Aconselhamento AI)", 16, posY + 5);
+        
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(8);
+        doc.setTextColor(75, 85, 99);
+        
+        let customAdvice = '';
+        if (sellerName === 'Todos') {
+          customAdvice = 'A equipe de vendas Sono & Cia demonstra consistência comercial de alto padrão. Para acelerar o faturamento global, estimule a concorrência saudável no Showroom e garanta que todos os contatos do Instagram recebam resposta rápida e personalizada em até 15 minutos.';
+        } else if (cxRate >= 30) {
+          customAdvice = `Excepcional desempenho com taxa de ${cxRate}% de conversão registrada. O consultor(a) ${sellerName} opera em nível de Excelência. Recomenda-se focar no faturamento de alto ticket através de combos completos (Cama Box Siena Couro + Colchão Gel-Tech) para maximizar o ticket médio.`;
+        } else if (cxRate >= 12) {
+          customAdvice = `Conversão estabelecida em ${cxRate}%. ${sellerName} possui boa constância, mas pode alavancar as vendas reforçando o acompanhamento pós-visita showroom. Sugira enviar aos clientes em aberto as fotos reais das cabeceiras de veludo e os depoimentos da marca.`;
+        } else {
+          customAdvice = `A taxa de fechamentos de ${cxRate}% indica gargalos temporários no funil de recepção. Ajude ${sellerName} a repassar os ${sOpen.length} contatos em aberto, focando em ligar por telefone com ofertas dinâmicas de travesseiros adicionais de brinde para acelerar a tomada de decisão.`;
+        }
+        
+        const linesAdvice = doc.splitTextToSize(customAdvice, pageWidth - 32);
+        doc.text(linesAdvice, 16, posY + 11);
+        posY += 34;
+      }
+      
+      // Signature Area
+      if (includeSignature) {
+        checkPageBreak(50);
+        posY = Math.max(posY, pageHeight - 45);
+        
+        doc.setFontSize(8.5);
+        doc.setFont('helvetica', 'bold');
+        doc.setTextColor(15, 23, 42);
+        doc.text("ASSINATURA DO ADMINISTRADOR E VERIFICAÇÃO", 12, posY);
+        doc.line(12, posY + 2, 85, posY + 2);
+        
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(7.5);
+        doc.setTextColor(100, 116, 139);
+        doc.text("Validador Geral do Sistema CRM", 12, posY + 6);
+        doc.text("Auditoriade Atividades Sono & Cia", 12, posY + 10);
+        
+        doc.setDrawColor(203, 213, 225);
+        doc.line(pageWidth - 85, posY + 18, pageWidth - 12, posY + 18);
+        doc.setFont('helvetica', 'bold');
+        doc.text("Diretoria Executiva de Vendas", pageWidth - 80, posY + 22);
+        doc.setFont('helvetica', 'normal');
+        doc.text("Selo Eletrônico Integrado", pageWidth - 83, posY + 26);
+      }
+      
+      // Footer Barcodes
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7);
+      doc.setTextColor(156, 163, 175);
+      doc.text("||| | ||| || |||| | |||| ||| ||| | ||| |||| || ||| ||| || | || |||| | |||", 12, pageHeight - 12);
+      doc.text(`CÓDIGO DE AUDITORIA CRM: ${Math.random().toString(36).substring(2, 14).toUpperCase()}`, 12, pageHeight - 9);
+      
+      doc.save(`Relatorio_Premium_${sellerName.replace(/\s+/g, '_')}_${new Date().toISOString().split('T')[0]}.pdf`);
+      
+      confetti({
+        particleCount: 160,
+        spread: 90,
+        colors: ['#0F172A', '#F59E0B', '#10B981', '#3B82F6']
+      });
+    } catch (e) {
+      console.error(e);
+      alert('Incompatibilidade temporária no motor de PDF. Veja os detalhes.');
+    }
+  };
+
   return (
     <div className="flex-1 px-5 sm:px-8 pb-8 overflow-y-auto">
       <div className="flex flex-col xl:flex-row items-stretch xl:items-center justify-between mb-6 gap-4 font-sans">
@@ -661,6 +1030,266 @@ export const CRMReportsView = ({ leads }: { leads: Lead[] }) => {
             <span className="hidden sm:inline">{exporting ? 'Gerando...' : 'Exportar PDF'}</span>
           </button>
         </div>
+      </div>
+
+      {/* STÚDIO DE RELATÓRIOS EXECUTIVOS PERSONALIZADOS (POR VENDEDOR / MULTICRITÉRIO) */}
+      <div className="mb-8 bg-gradient-to-br from-[#0F172A] to-[#1E293B] rounded-3xl p-6 text-white shadow-xl shadow-slate-950/10 border border-slate-800/80 font-sans relative overflow-hidden">
+        {/* Subtle background visual ornaments */}
+        <div className="absolute top-0 right-0 w-80 h-80 bg-gradient-to-bl from-slate-800/20 to-transparent rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-gradient-to-tr from-[#F59E0B]/5 to-transparent rounded-full blur-2xl pointer-events-none" />
+
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800/60 pb-5 relative z-10">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#F59E0B] to-[#D97706] flex shrink-0 items-center justify-center text-slate-950 shadow-lg shadow-amber-500/10 border border-amber-400/20">
+              <Sparkles className="w-6 h-6 text-slate-950 stroke-[2.3]" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-[10px] font-black text-amber-400 bg-amber-400/10 px-2.5 py-0.5 rounded-full uppercase tracking-[0.15em] border border-amber-400/10">
+                  Business Intelligence
+                </span>
+                <span className="text-[10px] font-bold text-slate-400">
+                  v2.8 Premium
+                </span>
+              </div>
+              <h3 className="text-lg font-black text-white mt-1.5 leading-tight tracking-tight">
+                Estúdio de Performance & Relatórios Personalizados por Vendedor
+              </h3>
+              <p className="text-xs text-slate-400 mt-1">
+                Selecione um vendedor, filtre os dados desejados, insira anotações de liderança e gere um PDF certificado pelo CRM.
+              </p>
+            </div>
+          </div>
+          
+          <button
+            onClick={() => setIsBuilderOpen(!isBuilderOpen)}
+            className="self-start md:self-auto px-4 py-2 border border-slate-700/80 hover:border-slate-500 focus:outline-none focus:ring-2 focus:ring-amber-500 rounded-xl text-xs font-black text-slate-300 hover:text-white uppercase tracking-wider transition-all cursor-pointer bg-slate-900/60 backdrop-blur-xs flex items-center gap-1.5"
+          >
+            {isBuilderOpen ? (
+              <>
+                <X className="w-3.5 h-3.5 text-rose-400" /> Recolher Painel
+              </>
+            ) : (
+              <>
+                <Zap className="w-3.5 h-3.5 text-amber-400" /> Customizar Relatório
+              </>
+            )}
+          </button>
+        </div>
+
+        {isBuilderOpen ? (
+          <div className="mt-6 grid grid-cols-1 lg:grid-cols-12 gap-8 relative z-10 transition-all duration-300">
+            {/* LEFT COLUMN: Configurations */}
+            <div className="lg:col-span-7 space-y-5">
+              <h4 className="text-[10px] font-black uppercase text-amber-500 tracking-widest flex items-center gap-1.5 border-b border-slate-800 pb-1.5">
+                <UserCheck className="w-3.5 h-3.5" /> 1. Parâmetros & Notas do Relatório
+              </h4>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2">
+                    Consultor de Vendas Alvo:
+                  </label>
+                  <div className="relative">
+                    <select
+                      value={selectedBuilderSeller}
+                      onChange={(e) => setSelectedBuilderSeller(e.target.value)}
+                      className="w-full bg-slate-900/90 text-slate-100 border border-slate-755 focus:border-amber-500 p-3 rounded-xl text-xs font-extrabold outline-none appearance-none cursor-pointer transition-colors"
+                    >
+                      <option value="Todos">Todos os Consultores (Geral)</option>
+                      {allAssignees.map(item => (
+                        <option key={item} value={item}>{item}</option>
+                      ))}
+                      <option value="Sem Responsável">Sem Responsável</option>
+                    </select>
+                    <div className="pointer-events-none absolute right-3.5 top-3.5 text-slate-400">
+                      <Zap className="w-3.5 h-3.5 col-amber-400" />
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider mb-2">
+                    Título Oficial do Documento:
+                  </label>
+                  <input
+                    type="text"
+                    value={customReportTitle}
+                    onChange={(e) => setCustomReportTitle(e.target.value)}
+                    placeholder="Ex: Cédula de Desempenho e Metas"
+                    className="w-full bg-slate-900/90 text-slate-100 placeholder-slate-500 border border-slate-755 focus:border-amber-500 p-3 rounded-xl text-xs font-bold outline-none transition-colors"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-[11px] font-bold text-slate-300 uppercase tracking-wider">
+                    Parecer de Feedback do Gestor (Coaching):
+                  </label>
+                  <span className="text-[10px] font-bold text-amber-400/80 italic">
+                    Aparecerá destacado em caixa no PDF
+                  </span>
+                </div>
+                <textarea
+                  value={adminFeedback}
+                  onChange={(e) => setAdminFeedback(e.target.value)}
+                  placeholder="Escreva anotações reais de orientação sobre conversões, postura com novos leads e metas do showroom para este consultor..."
+                  rows={3}
+                  className="w-full bg-slate-900/90 text-slate-100 placeholder-slate-500 border border-slate-755 focus:border-amber-500 p-3 rounded-xl text-xs font-medium outline-none resize-none transition-colors"
+                />
+              </div>
+            </div>
+
+            {/* RIGHT COLUMN: Document Modules Checks */}
+            <div className="lg:col-span-5 flex flex-col justify-between space-y-6">
+              <div className="space-y-4">
+                <h4 className="text-[10px] font-black uppercase text-amber-500 tracking-widest flex items-center gap-1.5 border-b border-slate-800 pb-1.5">
+                  <FileCode className="w-3.5 h-3.5" /> 2. Módulos & Seções do PDF
+                </h4>
+
+                <div className="space-y-2.5">
+                  <button
+                    onClick={() => setIncludeKPIs(!includeKPIs)}
+                    className={`w-full flex items-center justify-between p-3 rounded-xl border text-xs font-bold transition-all ${
+                      includeKPIs
+                        ? 'bg-amber-400/10 border-amber-500/50 text-white shadow-xs'
+                        : 'bg-slate-900/40 border-slate-800/80 text-slate-400 hover:border-slate-700/80'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className={`p-1 rounded-lg ${includeKPIs ? 'bg-amber-400 text-slate-950' : 'bg-slate-800'}`}>
+                        <Zap className="w-3.5 h-3.5" />
+                      </div>
+                      <span>Resumo dos Indicadores Principais (KPIs)</span>
+                    </div>
+                    {includeKPIs ? (
+                      <Check className="w-4 h-4 text-amber-400 stroke-[3]" />
+                    ) : (
+                      <div className="w-4 h-4 rounded-full border border-slate-700" />
+                    )}
+                  </button>
+
+                  <button
+                    onClick={() => setIncludeWonLeads(!includeWonLeads)}
+                    className={`w-full flex items-center justify-between p-3 rounded-xl border text-xs font-bold transition-all ${
+                      includeWonLeads
+                        ? 'bg-amber-400/10 border-amber-500/50 text-white shadow-xs'
+                        : 'bg-slate-900/40 border-slate-800/80 text-slate-400 hover:border-slate-700/80'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className={`p-1 rounded-lg ${includeWonLeads ? 'bg-amber-400 text-slate-950' : 'bg-slate-800'}`}>
+                        <Award className="w-3.5 h-3.5" />
+                      </div>
+                      <span>Listagem de Vendas Concluídas (Receitas)</span>
+                    </div>
+                    {includeWonLeads ? (
+                      <Check className="w-4 h-4 text-amber-400 stroke-[3]" />
+                    ) : (
+                      <div className="w-4 h-4 rounded-full border border-slate-700" />
+                    )}
+                  </button>
+
+                  <button
+                    onClick={() => setIncludeActiveLeads(!includeActiveLeads)}
+                    className={`w-full flex items-center justify-between p-3 rounded-xl border text-xs font-bold transition-all ${
+                      includeActiveLeads
+                        ? 'bg-amber-400/10 border-amber-500/50 text-white shadow-xs'
+                        : 'bg-slate-900/40 border-slate-800/80 text-slate-400 hover:border-slate-700/80'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className={`p-1 rounded-lg ${includeActiveLeads ? 'bg-amber-400 text-slate-950' : 'bg-slate-800'}`}>
+                        <RefreshCw className="w-3.5 h-3.5 text-slate-950" />
+                      </div>
+                      <span>Metas do Pipeline de Clientes de Atendimento</span>
+                    </div>
+                    {includeActiveLeads ? (
+                      <Check className="w-4 h-4 text-amber-400 stroke-[3]" />
+                    ) : (
+                      <div className="w-4 h-4 rounded-full border border-slate-700" />
+                    )}
+                  </button>
+
+                  <button
+                    onClick={() => setIncludeCoachingAI(!includeCoachingAI)}
+                    className={`w-full flex items-center justify-between p-3 rounded-xl border text-xs font-bold transition-all ${
+                      includeCoachingAI
+                        ? 'bg-amber-400/10 border-amber-500/50 text-white shadow-xs'
+                        : 'bg-slate-900/40 border-slate-800/80 text-slate-400 hover:border-slate-700/80'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className={`p-1 rounded-lg ${includeCoachingAI ? 'bg-amber-400 text-slate-950' : 'bg-slate-800'}`}>
+                        <Sparkles className="w-3.5 h-3.5" />
+                      </div>
+                      <span>Prescrição Comercial por Inteligência Artificial</span>
+                    </div>
+                    {includeCoachingAI ? (
+                      <Check className="w-4 h-4 text-amber-400 stroke-[3]" />
+                    ) : (
+                      <div className="w-4 h-4 rounded-full border border-slate-700" />
+                    )}
+                  </button>
+
+                  <button
+                    onClick={() => setIncludeSignature(!includeSignature)}
+                    className={`w-full flex items-center justify-between p-3 rounded-xl border text-xs font-bold transition-all ${
+                      includeSignature
+                        ? 'bg-amber-400/10 border-amber-500/50 text-white shadow-xs'
+                        : 'bg-slate-900/40 border-slate-800/80 text-slate-400 hover:border-slate-700/80'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2.5">
+                      <div className={`p-1 rounded-lg ${includeSignature ? 'bg-amber-400 text-slate-950' : 'bg-slate-800'}`}>
+                        <Shield className="w-3.5 h-3.5" />
+                      </div>
+                      <span>Assinatura Digital de Validação CRM</span>
+                    </div>
+                    {includeSignature ? (
+                      <Check className="w-4 h-4 text-amber-400 stroke-[3]" />
+                    ) : (
+                      <div className="w-4 h-4 rounded-full border border-slate-700" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* ACTION: COMPILE PDF BUTTON */}
+              <div className="pt-2">
+                <div className="flex justify-between items-center text-[10px] text-slate-400 mb-2.5 font-mono px-1">
+                  <span>Filtro de Tempo Ativo: {getDateFilterLabel(dateFilter)}</span>
+                  <span>Registros Alvo: {
+                    filteredLeads.filter(l => 
+                      selectedBuilderSeller === 'Todos' || ((l as any).assignee || 'Sem Responsável') === selectedBuilderSeller
+                    ).length
+                  } leads</span>
+                </div>
+
+                <button
+                  onClick={exportCustomPremiumPDF}
+                  className="w-full py-4 bg-gradient-to-r from-amber-400 via-amber-500 to-[#D97706] hover:from-amber-300 hover:to-amber-500 text-slate-950 font-black text-xs uppercase tracking-[0.14em] rounded-2xl shadow-xl shadow-amber-500/10 active:scale-98 transition-all flex items-center justify-center gap-2 cursor-pointer border border-amber-300/30"
+                >
+                  <FileText className="w-4 h-4 text-slate-950 stroke-[2.3]" />
+                  Gerar Relatório de Desempenho Executivo (PDF)
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="mt-4 flex items-center justify-between bg-slate-900/40 p-3.5 rounded-2xl border border-slate-800/50">
+            <div className="flex items-center gap-3">
+              <Zap className="w-4 h-4 text-amber-400" />
+              <p className="text-xs text-slate-300 md:pr-10">
+                O Estúdio de Relatórios por Consultor está minimizado. Clique no botão ao lado para configurar relatórios customizados, dar feedback e baixar PDFs.
+              </p>
+            </div>
+            <p className="text-[10px] font-mono text-slate-500 whitespace-nowrap hidden sm:block">
+              Vendedor ativo: <span className="font-bold text-amber-400">{selectedBuilderSeller === 'Todos' ? 'Geral' : selectedBuilderSeller}</span>
+            </p>
+          </div>
+        )}
       </div>
 
       <div ref={reportRef} id="printable-report" className="bg-white p-4 sm:p-6 print:p-0 print:bg-white rounded-2xl border border-gray-100/40">

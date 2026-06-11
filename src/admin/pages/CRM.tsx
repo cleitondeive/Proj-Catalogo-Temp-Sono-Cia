@@ -246,7 +246,7 @@ export default function CRM({ currentUser }: { currentUser?: AdminUser }) {
     const searchDigits = s.replace(/\D/g, '');
     const nameMatch = l.name.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(s);
     const emailMatch = l.email && l.email.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(s);
-    const phoneMatch = searchDigits.length > 0 && l.phone.replace(/\D/g, '').includes(searchDigits);
+    const phoneMatch = searchDigits.length > 0 && l.phone && l.phone.replace(/\D/g, '').includes(searchDigits);
     
     let filterMatch = true;
     if (activeFilter === 'Sem Follow-up') filterMatch = !l.nextFollowUp;

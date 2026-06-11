@@ -6,24 +6,28 @@ export default function Auth({ onLogin, onBack }: { onLogin: () => void, onBack:
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { data } = useStore();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(false);
+    setError(null);
     
     setTimeout(() => {
       // Find user
       const user = data.users?.find(u => u.email === email && (u.password === password || (!u.password && password === 'admin123')));
       
       if (user) {
-        localStorage.setItem('admin_auth', 'true');
-        localStorage.setItem('admin_user_id', user.id);
-        onLogin();
+        if (user.active === false) {
+          setError('Sua conta foi desativada pelo administrador. Entre em contato para ativar.');
+        } else {
+          localStorage.setItem('admin_auth', 'true');
+          localStorage.setItem('admin_user_id', user.id);
+          onLogin();
+        }
       } else {
-        setError(true);
+        setError('Credenciais incorretas.');
       }
       setLoading(false);
     }, 800);
@@ -65,7 +69,7 @@ export default function Auth({ onLogin, onBack }: { onLogin: () => void, onBack:
               onChange={(e) => setPassword(e.target.value)}
               className={`w-full px-4 py-4 rounded-xl border ${error ? 'border-red-300 bg-red-50' : 'border-gray-200 bg-gray-50'} focus:bg-white focus:outline-none focus:ring-2 focus:ring-brand-blue focus:border-transparent transition-all`}
             />
-            {error && <p className="text-red-500 text-xs font-bold mt-2 absolute -bottom-5 left-0">Credenciais incorretas.</p>}
+            {error && <p className="text-red-500 text-xs font-bold mt-2 absolute -bottom-5 left-0">{error}</p>}
           </div>
 
           <button 

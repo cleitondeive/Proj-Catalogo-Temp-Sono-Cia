@@ -1399,7 +1399,7 @@ export default function App() {
 
         {/* Main Nav */}
         <div
-          className={`bg-white border-b border-gray-100 flex justify-between items-center px-4 md:px-8 2xl:px-12 3xl:px-16 w-full transition-all duration-300 relative z-10 shadow-sm ${isScrolled ? "py-1 md:py-1.5" : "py-2 md:py-2.5"}`}
+          className={`bg-white border-b border-gray-100 flex justify-between items-center px-4 md:px-8 2xl:px-12 3xl:px-16 w-full transition-all duration-500 ease-out relative z-10 shadow-sm ${isScrolled ? "py-1 md:py-1.5" : "py-2 md:py-2.5"}`}
         >
           <div className="flex items-center gap-1 sm:gap-2 md:gap-4 flex-1 md:flex-none md:w-1/3">
             <button className="p-2 cursor-pointer hover:text-brand-blue transition-colors text-[#0F172A] md:hidden -ml-2">
@@ -1472,7 +1472,7 @@ export default function App() {
               onClick={() => setCurrentView('home')} 
               className="cursor-pointer flex items-center justify-center py-0.5"
             >
-              <Logo className={`${isScrolled ? "h-7 sm:h-8 md:h-9 lg:h-10 scale-[2.6] md:scale-[2.8]" : "h-9 sm:h-10 md:h-11 lg:h-12 scale-[2.8] md:scale-[3.0] lg:scale-[3.2]"} w-auto transform origin-center transition-all duration-300`} />
+              <Logo className={`${isScrolled ? "h-8 sm:h-9 md:h-10 scale-[2.4] sm:scale-[2.6] md:scale-[2.8]" : "h-11 sm:h-12 md:h-13 scale-[2.8] sm:scale-[3.1] md:scale-[3.4]"} w-auto transform origin-center transition-all duration-500 ease-out`} />
             </div>
           </div>
 
@@ -2862,7 +2862,7 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
             {/* Brand Column */}
             <div className="flex flex-col items-start text-left">
               <div className="mb-4">
-                <Logo inverse className="h-11 sm:h-12 md:h-13 w-auto" />
+                <Logo inverse className="h-20 sm:h-24 md:h-28 w-auto transform origin-left hover:scale-[1.03] transition-transform duration-300" />
               </div>
               <p className="text-white/70 text-sm font-medium leading-relaxed mb-8 max-w-[280px]">
                 A excelência em artigos e tecnologias para o sono, curadoria exclusiva de colchões e enxovais para elevar o seu descanso. Trazemos o luxo do repouso rejuvenescedor para o seu dia a dia.

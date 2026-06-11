@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { AdminUser, AdminRole } from '../../types';
 import { useStore } from '../../store';
-import { Users, UserPlus, Shield, Mail, Trash2, Edit2, KeyRound, Sparkles, TrendingUp, CheckCircle2, AlertCircle, X } from 'lucide-react';
+import { Users, UserPlus, Shield, Mail, Trash2, Edit2, KeyRound, Sparkles, TrendingUp, CheckCircle2, AlertCircle, X, UserCheck, UserX } from 'lucide-react';
 
 export default function Team({ currentUser }: { currentUser: AdminUser }) {
   const { data, addUser, updateUser, deleteUser, addLog } = useStore();
@@ -164,13 +164,67 @@ export default function Team({ currentUser }: { currentUser: AdminUser }) {
                       </span>
                     </td>
                     <td className="p-4">
-                      <span className="flex items-center gap-1.5 text-xs font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2 py-1 rounded-lg w-fit">
-                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span>
-                        Ativo
-                      </span>
+                      {(() => {
+                        const isUserActive = user.active !== false;
+                        const canToggle = currentUser.role === 'admin' && user.id !== 'admin-master' && user.id !== currentUser.id;
+                        return (
+                          <div className="flex items-center gap-2.5">
+                            {canToggle ? (
+                              <button
+                                onClick={() => {
+                                  const nextStatus = !isUserActive;
+                                  updateUser(user.id, { active: nextStatus });
+                                  addLog('Usuário', `${nextStatus ? 'Ativou' : 'Desativou'} usuário ${user.name}`, currentUser.name, 'update');
+                                }}
+                                className={`relative inline-flex h-5 w-10 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                                  isUserActive ? 'bg-emerald-500' : 'bg-gray-300'
+                                }`}
+                                title={isUserActive ? "Clique para Desativar" : "Clique para Ativar"}
+                              >
+                                <span
+                                  className={`pointer-events-none inline-block h-4 w-4 transform rounded-full bg-white shadow-sm ring-0 transition duration-200 ease-in-out ${
+                                    isUserActive ? 'translate-x-5' : 'translate-x-0'
+                                  }`}
+                                />
+                              </button>
+                            ) : null}
+                            <span className={`flex items-center gap-1 text-xs font-bold px-2 py-0.5 rounded-md w-fit ${
+                              isUserActive 
+                                ? 'text-emerald-700 bg-emerald-50 border border-emerald-100' 
+                                : 'text-gray-500 bg-gray-50 border border-gray-200'
+                            }`}>
+                              <span className={`w-1.5 h-1.5 rounded-full ${
+                                isUserActive ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' : 'bg-gray-400'
+                              }`} />
+                              {isUserActive ? 'Ativo' : 'Inativo'}
+                            </span>
+                          </div>
+                        );
+                      })()}
                     </td>
                     <td className="p-4 pr-6">
                        <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                         {(() => {
+                           const isUserActive = user.active !== false;
+                           const canToggle = currentUser.role === 'admin' && user.id !== 'admin-master' && user.id !== currentUser.id;
+                           return canToggle ? (
+                             <button 
+                               onClick={() => {
+                                 const nextStatus = !isUserActive;
+                                 updateUser(user.id, { active: nextStatus });
+                                 addLog('Usuário', `${nextStatus ? 'Ativou' : 'Desativou'} usuário ${user.name}`, currentUser.name, 'update');
+                               }}
+                               className={`p-1.5 hover:bg-white border-transparent border rounded-lg shadow-sm transition-all ${
+                                 isUserActive 
+                                   ? 'text-gray-400 hover:text-rose-500 hover:border-rose-200 hover:bg-rose-50/50' 
+                                   : 'text-gray-400 hover:text-emerald-500 hover:border-emerald-200 hover:bg-emerald-50/50'
+                               }`}
+                               title={isUserActive ? "Desativar Membro (Bloquear Acesso)" : "Ativar Membro (Permitir Acesso)"}
+                             >
+                               {isUserActive ? <UserX className="w-4 h-4" /> : <UserCheck className="w-4 h-4" />}
+                             </button>
+                           ) : null;
+                         })()}
                          <button 
                            onClick={() => {
                              setEditingUser(user);

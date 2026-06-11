@@ -110,6 +110,7 @@ export type AdminUser = {
   role: AdminRole;
   permissions: string[]; // e.g. 'products', 'crm', 'settings', 'metrics'
   createdAt: string;
+  active?: boolean;
 };
 
 export type AppData = {
