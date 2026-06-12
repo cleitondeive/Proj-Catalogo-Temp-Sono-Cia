@@ -1,5 +1,5 @@
 import React from 'react';
-import { Heart, Search, Plus } from 'lucide-react';
+import { Heart, Search, Plus, GitCompare } from 'lucide-react';
 import { Product } from '../types';
 
 interface ProductCardProps {
@@ -12,6 +12,8 @@ interface ProductCardProps {
   idx?: number;
   mobileVisibleCount?: number;
   className?: string;
+  compareProductIds?: string[];
+  onToggleCompare?: (productId: string, e: React.MouseEvent) => void;
 }
 
 export const ProductCard: React.FC<ProductCardProps> = ({
@@ -23,7 +25,9 @@ export const ProductCard: React.FC<ProductCardProps> = ({
   handleAddToCart,
   idx = 0,
   mobileVisibleCount = 999,
-  className = ""
+  className = "",
+  compareProductIds = [],
+  onToggleCompare
 }) => {
   const [currentImage, setCurrentImage] = React.useState(product.image);
   const [isImageFading, setIsImageFading] = React.useState(false);
@@ -61,7 +65,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
             </span>
           </div>
         )}
-        <div className="absolute top-3 right-3 z-30 flex flex-col gap-2 translate-x-4 opacity-0 group-hover:translate-x-0 group-hover:opacity-100 transition-all duration-300">
+        <div className="absolute top-3 right-3 z-30 flex flex-col gap-2 opacity-100 translate-x-0 md:opacity-0 md:translate-x-4 md:group-hover:translate-x-0 md:group-hover:opacity-100 transition-all duration-300">
           <div className="relative group/heart flex items-center">
             <span className="absolute right-[calc(100%+8px)] opacity-0 group-hover/heart:opacity-100 translate-x-2 group-hover/heart:translate-x-0 transition-all duration-300 bg-gray-900 text-white text-[10px] whitespace-nowrap px-2.5 py-1.5 rounded-lg font-medium pointer-events-none shadow-xl flex items-center before:content-[''] before:absolute before:right-[-4px] before:top-1/2 before:-translate-y-1/2 before:border-y-[4px] before:border-y-transparent before:border-l-[4px] before:border-l-gray-900 z-50">
               Favoritar
@@ -91,6 +95,26 @@ export const ProductCard: React.FC<ProductCardProps> = ({
               <Search className="w-[18px] h-[18px] transition-transform duration-300 group-hover/search:scale-110" strokeWidth={2} />
             </button>
           </div>
+          {onToggleCompare && (
+            <div className="relative group/compare flex items-center">
+              <span className="absolute right-[calc(100%+8px)] opacity-0 group-hover/compare:opacity-100 translate-x-2 group-hover/compare:translate-x-0 transition-all duration-300 bg-gray-900 text-white text-[10px] whitespace-nowrap px-2.5 py-1.5 rounded-lg font-medium pointer-events-none shadow-xl flex items-center before:content-[''] before:absolute before:right-[-4px] before:top-1/2 before:-translate-y-1/2 before:border-y-[4px] before:border-y-transparent before:border-l-[4px] before:border-l-gray-900 z-50">
+                Comparar
+              </span>
+              <button
+                className={`w-10 h-10 rounded-full flex items-center justify-center shadow-[0_2px_10px_rgba(0,0,0,0.1)] hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer ${
+                  compareProductIds.includes(product.id)
+                    ? 'bg-violet-600 text-white hover:bg-violet-700'
+                    : 'bg-white/90 text-gray-400 hover:text-violet-600'
+                }`}
+                onClick={(e) => {
+                  e.preventDefault();
+                  onToggleCompare(product.id, e);
+                }}
+              >
+                <GitCompare className="w-[18px] h-[18px]" strokeWidth={2} />
+              </button>
+            </div>
+          )}
         </div>
 
         <img

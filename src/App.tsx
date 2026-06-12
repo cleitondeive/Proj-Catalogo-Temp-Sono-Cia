@@ -49,6 +49,7 @@ import {
   FileText,
   Phone,
   Clock,
+  GitCompare,
 } from "lucide-react";
 import { motion } from "motion/react";
 import React, { useState, useRef, useEffect, useMemo } from "react";
@@ -57,6 +58,7 @@ import Auth from "./admin/components/Auth";
 import { useStore } from "./store";
 import Logo from "./components/Logo";
 import InstitutionalModal from "./components/InstitutionalModal";
+import PriceComparatorModal from "./components/PriceComparatorModal";
 
 // Custom CSS for Ken Burns and Pulsing Dot
 const customStyles = `
@@ -122,7 +124,9 @@ const SectionCarousel = ({
   wishlist,
   toggleWishlist,
   addToCart,
-  onViewCategory
+  onViewCategory,
+  compareProductIds = [],
+  onToggleCompare
 }: {
   title: string;
   products: any[];
@@ -131,6 +135,8 @@ const SectionCarousel = ({
   toggleWishlist: (product: any, e: React.MouseEvent) => void;
   addToCart: (product: any, e: React.MouseEvent) => void;
   onViewCategory?: () => void;
+  compareProductIds?: string[];
+  onToggleCompare?: (productId: string, e: React.MouseEvent) => void;
 }) => {
   const [quickViewProduct, setQuickViewProduct] = useState<any | null>(null);
   const [activeImageIdx, setActiveImageIdx] = useState(0);
@@ -384,6 +390,8 @@ const SectionCarousel = ({
                 handleAddToCart={addToCart}
                 mobileVisibleCount={mobileVisibleCount}
                 className={"w-full md:w-[280px] lg:w-[310px] xl:w-[330px] shrink-0 md:snap-start"}
+                compareProductIds={compareProductIds}
+                onToggleCompare={onToggleCompare}
               />
             ))
           )}
@@ -863,7 +871,9 @@ function CategoryPage({
   toggleWishlist, 
   addToCart,
   setQuickViewProduct,
-  setActiveImageIdx
+  setActiveImageIdx,
+  compareProductIds = [],
+  onToggleCompare
 }: { 
   category: any; 
   products: any[];
@@ -873,6 +883,8 @@ function CategoryPage({
   addToCart: (product: any, e: React.MouseEvent) => void;
   setQuickViewProduct: (product: any) => void;
   setActiveImageIdx: (idx: number) => void;
+  compareProductIds?: string[];
+  onToggleCompare?: (productId: string, e: React.MouseEvent) => void;
 }) {
   const [showFilter, setShowFilter] = useState(false);
   const parsePrice = (priceStr: string) => {
@@ -1022,6 +1034,8 @@ function CategoryPage({
                 setQuickViewProduct={setQuickViewProduct}
                 setActiveImageIdx={setActiveImageIdx}
                 handleAddToCart={addToCart}
+                compareProductIds={compareProductIds}
+                onToggleCompare={onToggleCompare}
               />
             ))}
           </div>
@@ -1144,6 +1158,19 @@ export default function App() {
   const [currentView, setCurrentView] = useState<'home' | 'wishlist' | 'category' | 'admin'>('home');
   const [isAdminAuth, setIsAdminAuth] = useState(() => localStorage.getItem('admin_auth') === 'true');
   const [selectedCategory, setSelectedCategory] = useState<any | null>(null);
+
+  // Price Comparator state
+  const [isCompareOpen, setIsCompareOpen] = useState(false);
+  const [compareProductIds, setCompareProductIds] = useState<string[]>([]);
+
+  const handleToggleCompare = (productId: string) => {
+    setCompareProductIds(prev => {
+      if (prev.includes(productId)) {
+        return prev.filter(id => id !== productId);
+      }
+      return [...prev, productId].slice(0, 4);
+    });
+  };
 
   // Help menu & Institutional pages state
   const [isHelpMenuOpen, setIsHelpMenuOpen] = useState(false);
@@ -1647,6 +1674,19 @@ export default function App() {
                   <div>
                     <p className="text-[13px] font-semibold text-gray-800 group-hover:text-brand-blue transition-colors">Central de Ajuda</p>
                     <p className="text-[10px] text-gray-400 font-medium">Perguntas frequentes e FAQs</p>
+                  </div>
+                </button>
+
+                <button 
+                  onClick={() => { setIsCompareOpen(true); setIsHelpMenuOpen(false); }}
+                  className="flex items-center gap-3 group text-left p-2 rounded-xl hover:bg-gray-50/80 transition-all cursor-pointer"
+                >
+                  <div className="w-9 h-9 rounded-lg bg-violet-50 text-violet-600 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <SlidersHorizontal className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <p className="text-[13px] font-semibold text-gray-800 group-hover:text-brand-blue transition-colors">Comparador de Preços</p>
+                    <p className="text-[10px] text-gray-400 font-medium font-serif italic text-brand-blue">Exclusivo & Inteligente</p>
                   </div>
                 </button>
 
@@ -2286,13 +2326,25 @@ export default function App() {
       {/* Product Carousels */}
       <main className="w-full">
         <div className="max-w-7xl mx-auto px-6 py-8">
-          <SectionCarousel title="Estofados" products={estofados} Icon={Sofa} wishlist={wishlist} toggleWishlist={toggleWishlist} addToCart={addToCart} onViewCategory={() => handleSelectCategory("Estofados")} />
+          <SectionCarousel 
+            title="Estofados" 
+            products={estofados} 
+            Icon={Sofa} 
+            wishlist={wishlist} 
+            toggleWishlist={toggleWishlist} 
+            addToCart={addToCart} 
+            onViewCategory={() => handleSelectCategory("Estofados")} 
+            compareProductIds={compareProductIds}
+            onToggleCompare={handleToggleCompare}
+          />
           <SectionCarousel
             wishlist={wishlist} toggleWishlist={toggleWishlist} addToCart={addToCart}
             title="Móveis de Madeira"
             products={moveisMadeira}
             Icon={Box}
             onViewCategory={() => handleSelectCategory("Móveis de\nMadeira")}
+            compareProductIds={compareProductIds}
+            onToggleCompare={handleToggleCompare}
           />
         </div>
 
@@ -2349,6 +2401,8 @@ export default function App() {
             products={camas}
             Icon={BedDouble}
             onViewCategory={() => handleSelectCategory("Camas")}
+            compareProductIds={compareProductIds}
+            onToggleCompare={handleToggleCompare}
           />
           <SectionCarousel
             wishlist={wishlist} toggleWishlist={toggleWishlist} addToCart={addToCart}
@@ -2356,6 +2410,8 @@ export default function App() {
             products={colchoes}
             Icon={Package}
             onViewCategory={() => handleSelectCategory("Colchões")}
+            compareProductIds={compareProductIds}
+            onToggleCompare={handleToggleCompare}
           />
         </div>
 
@@ -2663,6 +2719,8 @@ export default function App() {
                   setQuickViewProduct={setQuickViewProduct}
                   setActiveImageIdx={setActiveImageIdx}
                   handleAddToCart={addToCart}
+                  compareProductIds={compareProductIds}
+                  onToggleCompare={handleToggleCompare}
                 />
               ))}
             </div>
@@ -3272,6 +3330,20 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
                     <span className="text-[13px] font-bold text-gray-900 mt-1">Ajuda & FAQ</span>
                     <span className="text-[9px] text-gray-400 leading-none">Dúvidas rápidas</span>
                   </button>
+
+                  <button 
+                    onClick={() => { setIsCompareOpen(true); setIsMobileMenuOpen(false); }}
+                    className="col-span-2 flex items-center gap-3 py-3 px-4 rounded-xl border border-violet-100 bg-violet-500/[0.04] hover:bg-violet-50 text-left transition-colors cursor-pointer mt-1"
+                  >
+                    <div className="w-8 h-8 rounded-full bg-violet-100 flex items-center justify-center text-violet-600 shrink-0">
+                      <GitCompare className="w-4.5 h-4.5" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <span className="text-[13px] font-bold text-gray-900 block leading-tight">Comparador de Preços</span>
+                      <span className="text-[9.5px] text-gray-400 block mt-0.5 leading-none">Compare modelos e medidas em tempo real</span>
+                    </div>
+                    <ChevronRight className="w-4 h-4 text-violet-400 shrink-0" />
+                  </button>
                 </div>
               </div>
 
@@ -3336,7 +3408,64 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
         onClose={() => setInstitutionalModalOpen(false)}
         activeTab={institutionalActiveTab}
         setActiveTab={setInstitutionalActiveTab}
+        onOpenCompare={() => {
+          setInstitutionalModalOpen(false);
+          setIsCompareOpen(true);
+        }}
       />
+
+      {/* Interactive Side-by-Side Premium Price & Specs Comparator Modal */}
+      <PriceComparatorModal
+        isOpen={isCompareOpen}
+        onClose={() => setIsCompareOpen(false)}
+        products={adminStore.data?.products || []}
+        selectedProductIds={compareProductIds}
+        onAddProduct={(id) => setCompareProductIds(prev => prev.includes(id) ? prev : [...prev, id].slice(0, 4))}
+        onRemoveProduct={(id) => setCompareProductIds(prev => prev.filter(pId => pId !== id))}
+        onClearAll={() => setCompareProductIds([])}
+        onAddToCart={addToCart}
+        onQuickView={(product) => { setQuickViewProduct(product); setActiveImageIdx(0); }}
+        whatsappNumber="5565992549622"
+      />
+
+      {/* Sleek Floating Dock/Bar for Selected Products Comparison */}
+      {compareProductIds.length > 0 && !isCompareOpen && (
+        <motion.div
+          initial={{ y: 80, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          exit={{ y: 80, opacity: 0 }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          className="fixed bottom-[76px] md:bottom-6 left-1/2 -translate-x-1/2 bg-[#0B0F19]/90 backdrop-blur-md text-white py-2.5 px-4 md:py-3.5 md:px-5 rounded-[20px] shadow-2xl border border-white/10 flex items-center gap-3.5 md:gap-5 z-[100] w-[92%] sm:max-w-lg md:max-w-xl transition-all"
+        >
+          <div className="flex items-center gap-2.5 md:gap-3 min-w-0">
+            <div className="w-[30px] h-[30px] md:w-[34px] md:h-[34px] bg-brand-blue rounded-full flex items-center justify-center text-white shrink-0 shadow-md">
+              <GitCompare className="w-3.5 h-3.5 md:w-4 md:h-4 animate-pulse" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-[11px] md:text-[13px] font-bold leading-tight">Comparar Itens</p>
+              <p className="text-[9px] md:text-[10px] text-gray-400 font-bold whitespace-nowrap">
+                {compareProductIds.length} {compareProductIds.length === 1 ? 'modelo' : 'modelos'} (Máx 4)
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 ml-auto shrink-0">
+            <button
+              onClick={() => setIsCompareOpen(true)}
+              className="py-1.5 px-3 md:px-3.5 bg-brand-blue hover:bg-brand-blue-hover text-white text-[10px] md:text-sm font-bold rounded-xl transition-all hover:scale-105 active:scale-95 cursor-pointer shadow-md border-none"
+            >
+              Comparar Agora
+            </button>
+            <button
+              onClick={() => setCompareProductIds([])}
+              className="text-gray-400 hover:text-white p-1.5 hover:bg-white/10 rounded-lg transition-colors cursor-pointer border-none bg-transparent"
+              title="Limpar seleção"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        </motion.div>
+      )}
 
       
       {/* Features Block */}
@@ -3486,6 +3615,17 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
                     className="text-white/80 font-medium hover:text-white hover:translate-x-1.5 transition-all duration-300 text-[13.5px] tracking-wide cursor-pointer bg-transparent border-none p-0 outline-none text-left inline-block transform"
                   >
                     Central de Ajuda
+                  </button>
+                </li>
+                <li>
+                  <button 
+                    onClick={() => {
+                      window.scrollTo({ top: 0, behavior: 'smooth' });
+                      setIsCompareOpen(true);
+                    }} 
+                    className="text-white/80 font-medium hover:text-white hover:translate-x-1.5 transition-all duration-300 text-[13.5px] tracking-wide cursor-pointer bg-transparent border-none p-0 outline-none text-left inline-block transform"
+                  >
+                    Comparador de Preços
                   </button>
                 </li>
                 <li>

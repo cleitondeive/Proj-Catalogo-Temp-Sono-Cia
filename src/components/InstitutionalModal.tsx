@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { 
   X, Mail, Phone, MapPin, Clock, ArrowRight, Check, Send, 
   ChevronDown, ChevronUp, Search, MessageCircle, FileText, 
-  ShieldCheck, HeartHandshake, Headphones, Sparkles, Building, Copy, Calendar
+  ShieldCheck, HeartHandshake, Headphones, Sparkles, Building, Copy, Calendar, GitCompare
 } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -11,13 +11,15 @@ interface InstitutionalModalProps {
   onClose: () => void;
   activeTab: 'fale-conosco' | 'endereco' | 'sobre' | 'central-ajuda' | 'politica' | 'termos';
   setActiveTab: (tab: 'fale-conosco' | 'endereco' | 'sobre' | 'central-ajuda' | 'politica' | 'termos') => void;
+  onOpenCompare?: () => void;
 }
 
 export default function InstitutionalModal({ 
   isOpen, 
   onClose, 
   activeTab, 
-  setActiveTab 
+  setActiveTab,
+  onOpenCompare
 }: InstitutionalModalProps) {
   
   // Fale Conosco form states
@@ -170,6 +172,15 @@ export default function InstitutionalModal({
                   </button>
                 );
               })}
+              {onOpenCompare && (
+                <button
+                  onClick={onOpenCompare}
+                  className="flex items-center gap-3.5 px-4 py-3 rounded-xl text-[13px] md:text-[14px] font-semibold transition-all duration-300 snap-center cursor-pointer text-white/60 hover:text-white hover:bg-white/[0.04]"
+                >
+                  <GitCompare className="w-4 h-4 text-white/40 shrink-0" />
+                  <span>Comparador de Preços</span>
+                </button>
+              )}
             </nav>
           </div>
 
@@ -423,10 +434,10 @@ export default function InstitutionalModal({
                         </div>
                       </div>
 
-                      <div className="border-t border-gray-100 pt-6 mt-6 flex items-center justify-between gap-4">
+                      <div className="border-t border-gray-100 pt-5 mt-5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 md:gap-4">
                         <button 
                           onClick={() => handleCopyText("Av. Marechal Deodoro, 1721, Bairro Quilombo, Cuiabá - MT, CEP 78020-670", 0)}
-                          className="text-[13px] font-bold text-gray-400 hover:text-brand-blue flex items-center gap-1.5 cursor-pointer transition-colors"
+                          className="text-[12.5px] md:text-[13px] font-bold text-gray-500 hover:text-brand-blue flex items-center justify-center gap-1.5 cursor-pointer transition-colors bg-gray-50 hover:bg-gray-100 sm:bg-transparent px-4 py-2.5 sm:p-0 rounded-xl border border-gray-100 sm:border-none"
                         >
                           {copiedShowroom === 0 ? (
                             <>
@@ -435,7 +446,7 @@ export default function InstitutionalModal({
                             </>
                           ) : (
                             <>
-                              <Copy className="w-4 h-4" />
+                              <Copy className="w-4 h-4 shrink-0" />
                               <span>Copiar Endereço</span>
                             </>
                           )}
@@ -444,10 +455,10 @@ export default function InstitutionalModal({
                           href="https://maps.google.com/?q=Av.+Marechal+Deodoro,+1721+-+Bairro+Quilombo+-+Cuiaba+-+MT" 
                           target="_blank" 
                           rel="noreferrer" 
-                          className="text-[13px] font-extrabold text-[#0D1B2A] hover:text-brand-blue flex items-center gap-1.5 transition-colors"
+                          className="text-[12.5px] md:text-[13px] font-extrabold text-brand-blue sm:text-[#0D1B2A] hover:text-brand-blue flex items-center justify-center gap-1.5 transition-colors bg-brand-blue/5 hover:bg-brand-blue/10 sm:bg-transparent px-4 py-2.5 sm:p-0 rounded-xl border border-brand-blue/10 sm:border-none"
                         >
                           <span>Como Chegar</span>
-                          <ArrowRight className="w-4 h-4" />
+                          <ArrowRight className="w-4 h-4 shrink-0" />
                         </a>
                       </div>
                     </div>

@@ -2,9 +2,9 @@ name: Supabase Keep-Alive
 
 on:
   schedule:
-    # Executa a cada 3 dias (às 00:00 UTC) para garantir que o banco não entre em modo de suspensão
+    # Executa a cada 3 dias (às 00:00 UTC) para garantir que o banco não entre em modo de suspensão (pausa de 7 dias)
     - cron: '0 0 */3 * *'
-  workflow_dispatch: # Permite rodar manualmente a qualquer momento
+  workflow_dispatch: # Permite rodar manualmente pelo painel do GitHub a qualquer hora
 
 jobs:
   keep-alive:
