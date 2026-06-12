@@ -1,0 +1,26 @@
+name: Supabase Keep-Alive
+
+on:
+  schedule:
+    # Executa a cada 3 dias (às 00:00 UTC) para garantir que o banco não entre em modo de suspensão
+    - cron: '0 0 */3 * *'
+  workflow_dispatch: # Permite rodar manualmente a qualquer momento
+
+jobs:
+  keep-alive:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase REST API
+        run: |
+          echo "Iniciando ping para manter o banco de dados ativo..."
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -X GET "https://zfonwqmpatubcnpuxcyr.supabase.co/rest/v1/app_state?select=id&limit=1" \
+            -H "apikey: sb_publishable_GidJwMFuH6e0-McO4fKBOA_zkmGd5S0" \
+            -H "Authorization: Bearer sb_publishable_GidJwMFuH6e0-McO4fKBOA_zkmGd5S0")
+          
+          echo "Status de resposta da API do Supabase: $RESPONSE"
+          if [ "$RESPONSE" -eq 200 ] || [ "$RESPONSE" -eq 204 ] || [ "$RESPONSE" -eq 404 ]; then
+            echo "Conexão realizada com sucesso! Supabase continuará ativo."
+          else
+            echo "Erro ao conectar com o Supabase. Código de status: $RESPONSE"
+            exit 1
+          fi
