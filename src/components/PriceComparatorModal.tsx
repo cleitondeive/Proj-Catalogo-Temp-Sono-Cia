@@ -43,6 +43,7 @@ export default function PriceComparatorModal({
   const [searchQuery, setSearchQuery] = useState('');
   const [activeSlotIndex, setActiveSlotIndex] = useState<number | null>(null);
   const [showOnlyDifferences, setShowOnlyDifferences] = useState(false);
+  const [highlightDifferences, setHighlightDifferences] = useState(true);
 
   // Active products to display in slots (max 4)
   const comparedProducts = useMemo(() => {
@@ -203,17 +204,33 @@ export default function PriceComparatorModal({
           <div className="flex items-center gap-2.5 flex-wrap md:flex-nowrap justify-between w-full md:w-auto mt-2 md:mt-0">
             <div className="flex items-center gap-2">
               {comparedProducts.length > 1 && (
-                <button
-                  onClick={() => setShowOnlyDifferences(!showOnlyDifferences)}
-                  className={`py-1.5 px-2.5 md:px-4 rounded-xl text-[11px] md:text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border ${
-                    showOnlyDifferences 
-                      ? 'bg-amber-500 text-white border-amber-500 shadow-sm' 
-                      : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
-                  }`}
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  <span>Diferenças</span>
-                </button>
+                <>
+                  <button
+                    onClick={() => setHighlightDifferences(!highlightDifferences)}
+                    className={`py-1.5 px-2.5 md:px-4 rounded-xl text-[11px] md:text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border ${
+                      highlightDifferences 
+                        ? 'bg-amber-500 text-white border-amber-500 shadow-sm' 
+                        : 'bg-white text-gray-700 border-gray-200 hover:bg-gray-50'
+                    }`}
+                    title="Realçar especificações que são diferentes"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 shrink-0" />
+                    <span>Realçar Specs</span>
+                  </button>
+
+                  <button
+                    onClick={() => setShowOnlyDifferences(!showOnlyDifferences)}
+                    className={`py-1.5 px-2.5 md:px-4 rounded-xl text-[11px] md:text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer border ${
+                      showOnlyDifferences 
+                        ? 'bg-[#1E293B] text-white border-[#1E293B] shadow-sm' 
+                        : 'bg-white text-gray-750 border-gray-200 hover:bg-gray-50'
+                    }`}
+                    title="Ocultar especificações que são idênticas"
+                  >
+                    <ArrowRightLeft className="w-3.5 h-3.5 shrink-0" />
+                    <span>Ocultar Iguais</span>
+                  </button>
+                </>
               )}
 
               {comparedProducts.length > 0 && (
@@ -467,6 +484,7 @@ export default function PriceComparatorModal({
                   <tbody>
                     {specRows.map((row) => {
                       const rowDiff = hasDifference(row.accessor);
+                      const isHighlightedRow = highlightDifferences && rowDiff && comparedProducts.length > 1;
                       
                       // Filter out rows that are identical if the user enabled "Show Only Differences"
                       if (showOnlyDifferences && !rowDiff) {
@@ -474,13 +492,29 @@ export default function PriceComparatorModal({
                       }
 
                       return (
-                        <tr key={row.key} className="border-b border-gray-100 hover:bg-gray-50/55 transition-colors group/row">
+                        <tr 
+                          key={row.key} 
+                          className={`border-b transition-colors group/row ${
+                            isHighlightedRow 
+                              ? 'bg-amber-50/20 hover:bg-amber-100/30 border-y border-amber-100/50' 
+                              : 'border-gray-100 hover:bg-gray-50/55'
+                          }`}
+                        >
                           {/* Parameter Meta Title */}
-                          <td className="p-2.5 md:p-3.5 bg-gray-55/35 align-middle text-[11px] md:text-xs font-bold text-gray-500 border-r border-gray-50">
-                            <span className="flex items-center gap-1.5">
-                              {row.label}
-                              {showOnlyDifferences && rowDiff && (
-                                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" title="Valor diferente entre produtos" />
+                          <td 
+                            className={`p-2.5 md:p-3.5 align-middle text-[11px] md:text-xs font-bold border-r border-gray-50 transition-colors ${
+                              isHighlightedRow 
+                                ? 'bg-amber-50 text-amber-900' 
+                                : 'bg-gray-55/35 text-gray-500'
+                            }`}
+                          >
+                            <span className="flex items-center justify-between gap-1.5 w-full">
+                              <span>{row.label}</span>
+                              {isHighlightedRow && (
+                                <span className="flex items-center gap-0.5 bg-amber-500 text-white text-[8px] font-black uppercase px-1 py-0.5 rounded tracking-wide leading-none shadow-xs scale-90">
+                                  <Sparkles className="w-1.5 h-1.5 shrink-0" fill="currentColor" />
+                                  <span>Dif</span>
+                                </span>
                               )}
                             </span>
                           </td>
@@ -498,10 +532,12 @@ export default function PriceComparatorModal({
                             return (
                               <td 
                                 key={`cell-${prod.id}-${row.key}`} 
-                                className={`p-2.5 md:p-3.5 align-middle border-l border-gray-100 text-[11px] md:text-xs text-gray-700 font-medium ${
+                                className={`p-2.5 md:p-3.5 align-middle border-l border-gray-100 text-[11px] md:text-xs font-medium transition-colors ${
                                   isCheapestCell 
-                                    ? 'bg-[#E6FDF4]/50 text-[#0369A1] font-bold' 
-                                    : ''
+                                    ? 'bg-[#E6FDF4]/65 text-[#0369A1] font-bold' 
+                                    : isHighlightedRow 
+                                      ? 'bg-amber-50/10 text-amber-950 font-bold border-amber-100/20' 
+                                      : 'text-gray-700'
                                 }`}
                               >
                                 {isCheapestCell ? (

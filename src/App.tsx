@@ -59,6 +59,9 @@ import { useStore } from "./store";
 import Logo from "./components/Logo";
 import InstitutionalModal from "./components/InstitutionalModal";
 import PriceComparatorModal from "./components/PriceComparatorModal";
+import MattressQuizModal from "./components/MattressQuizModal";
+import RecentlyViewedBar from "./components/RecentlyViewedBar";
+import VisitSchedulingModal from "./components/VisitSchedulingModal";
 
 // Custom CSS for Ken Burns and Pulsing Dot
 const customStyles = `
@@ -1172,6 +1175,47 @@ export default function App() {
     });
   };
 
+  // Mattress Quiz State
+  const [isQuizOpen, setIsQuizOpen] = useState(false);
+
+  // Showroom Visit Scheduling State
+  const [isVisitModalOpen, setIsVisitModalOpen] = useState(false);
+
+  // Recently Viewed State
+  const [recentViews, setRecentViews] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('sono_recent_views');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      return [];
+    }
+  });
+
+  const addToRecentViews = (productId: string) => {
+    setRecentViews(prev => {
+      const filtered = prev.filter(id => id !== productId);
+      const updated = [productId, ...filtered].slice(0, 8);
+      try {
+        localStorage.setItem('sono_recent_views', JSON.stringify(updated));
+      } catch (e) {}
+      return updated;
+    });
+  };
+
+  const clearRecentViews = () => {
+    setRecentViews([]);
+    try {
+      localStorage.removeItem('sono_recent_views');
+    } catch (e) {}
+  };
+
+  // Sync quick view with recently viewed
+  useEffect(() => {
+    if (quickViewProduct && quickViewProduct.id) {
+      addToRecentViews(quickViewProduct.id);
+    }
+  }, [quickViewProduct]);
+
   // Help menu & Institutional pages state
   const [isHelpMenuOpen, setIsHelpMenuOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -1452,17 +1496,17 @@ export default function App() {
               </svg>
             </a>
           </div>
-          <div className="flex-1 flex justify-center items-center gap-1.5 md:gap-3 px-2 text-center whitespace-nowrap overflow-hidden text-ellipsis">
+          <div className="flex-1 flex justify-center items-center gap-2 md:gap-3 px-2 text-center whitespace-nowrap overflow-hidden text-ellipsis">
             <Sparkles
-              className="w-3.5 h-3.5 md:w-4 md:h-4 text-yellow-400 shrink-0"
-              fill="currentColor"
+              className="w-3 h-3 md:w-3.5 md:h-3.5 text-amber-400/90 shrink-0 animate-pulse"
+              strokeWidth={1.5}
             />
-            <span className="truncate uppercase mt-[1px]">
-              Entrega agendada para todo o Brasil.
+            <span className="truncate uppercase text-[9.5px] md:text-[11px] font-medium tracking-[0.18em] text-white/90 font-sans">
+              Entrega agendada para todo o Brasil
             </span>
             <Sparkles
-              className="w-3.5 h-3.5 md:w-4 md:h-4 text-yellow-400 shrink-0"
-              fill="currentColor"
+              className="w-3 h-3 md:w-3.5 md:h-3.5 text-amber-400/90 shrink-0 animate-pulse"
+              strokeWidth={1.5}
             />
           </div>
           <div className="hidden md:flex gap-6 w-1/3 justify-end text-[10px] tracking-widest font-semibold text-white/90 uppercase">
@@ -1573,6 +1617,23 @@ export default function App() {
           </div>
 
           <div className="flex items-center justify-end gap-1 sm:gap-2 md:gap-5 2xl:gap-8 3xl:gap-10 flex-1 md:flex-none md:w-1/3">
+            <button
+              onClick={() => setIsQuizOpen(true)}
+              className="group/btn relative cursor-pointer rounded-full bg-brand-blue hover:bg-brand-blue-hover text-white transition-all duration-300 flex items-center justify-center shrink-0 border-none w-9 h-9 md:w-auto md:h-auto md:py-2 md:px-5 md:gap-2 shadow-[0_4px_12px_rgba(19,60,109,0.18)] hover:shadow-[0_6px_20px_rgba(19,60,109,0.3)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.97]"
+              title="Descobrir seu Colchão Ideal"
+            >
+              <Sparkles className="w-4 h-4 text-amber-400 fill-amber-400/20 group-hover/btn:scale-110 group-hover/btn:rotate-12 transition-all duration-300 shrink-0" />
+              
+              <span className="hidden md:inline font-serif font-black text-[13px] tracking-wide text-white">
+                Simulador de Sono
+              </span>
+              
+              {/* Subtle gold badge pulse */}
+              <span className="absolute md:relative top-1 right-1 md:top-0 md:right-0 flex h-1.5 w-1.5 md:ml-0.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-amber-500"></span>
+              </span>
+            </button>
             <button className="p-2 cursor-pointer hover:text-brand-blue transition-colors text-[#0F172A] hidden sm:block">
               <User className="w-[26px] h-[26px] 2xl:w-[32px] 2xl:h-[32px] 3xl:w-[40px] 3xl:h-[40px]" strokeWidth={1.5} />
             </button>
@@ -3207,6 +3268,25 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
                 )}
               </div>
 
+              {/* Premium Mattress Quiz Banner inside Mobile Menu */}
+              <button
+                onClick={() => { setIsQuizOpen(true); setIsMobileMenuOpen(false); }}
+                className="w-full p-4 rounded-2xl bg-gradient-to-r from-amber-500/10 to-yellow-500/5 border border-amber-500/30 text-left flex items-center justify-between group transition-all hover:scale-[1.01] active:scale-[0.99] cursor-pointer"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center shadow-md shrink-0">
+                    <Sparkles className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h5 className="text-[13px] font-black font-serif text-[#0F172A] flex items-center gap-1">
+                      <span>Simulador Colchão Ideal</span>
+                    </h5>
+                    <p className="text-[10.5px] text-amber-700 font-extrabold leading-tight mt-0.5">Quiz de biotipo, densidade & medida</p>
+                  </div>
+                </div>
+                <ChevronRight className="w-4 h-4 text-amber-650 group-hover:translate-x-0.5 transition-transform" />
+              </button>
+
               {/* Departamentos / Categories Section */}
               <div className="space-y-3">
                 <div className="flex items-center gap-2">
@@ -3426,6 +3506,33 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
         onAddToCart={addToCart}
         onQuickView={(product) => { setQuickViewProduct(product); setActiveImageIdx(0); }}
         whatsappNumber="5565992549622"
+      />
+
+      {/* Interactive Mattress Design Quiz Modal */}
+      <MattressQuizModal
+        isOpen={isQuizOpen}
+        onClose={() => setIsQuizOpen(false)}
+        products={adminStore.data?.products || []}
+        onQuickView={(product) => { setQuickViewProduct(product); setActiveImageIdx(0); }}
+        onAddToCart={addToCart}
+        whatsappNumber="5565992549622"
+      />
+
+      {/* Premium Showroom Visit Scheduling Modal */}
+      <VisitSchedulingModal
+        isOpen={isVisitModalOpen}
+        onClose={() => setIsVisitModalOpen(false)}
+        whatsappNumber={storeSettings.whatsapp}
+        adminStore={adminStore}
+      />
+
+      {/* Floating Recently Viewed Tray at Footer */}
+      <RecentlyViewedBar
+        products={adminStore.data?.products || []}
+        recentIds={recentViews}
+        onClear={clearRecentViews}
+        onQuickView={(product) => { setQuickViewProduct(product); setActiveImageIdx(0); }}
+        onAddToCart={addToCart}
       />
 
       {/* Sleek Floating Dock/Bar for Selected Products Comparison */}
@@ -3711,12 +3818,22 @@ ${optionsText}💰 Valor: ${p.showPrice === false ? 'Sob Consulta' : `R$ ${numPr
         <div
           className={`flex flex-col items-end gap-3 transition-all duration-300 origin-bottom right-0 ${isFabOpen ? "scale-100 opacity-100 translate-y-0 pointer-events-auto" : "scale-75 opacity-0 translate-y-4 pointer-events-none"}`}
         >
-          <button className="bg-white border-2 border-brand-blue text-[#1C202F] px-5 py-3 rounded-full flex items-center gap-3 shadow-lg hover:bg-gray-50 transition-colors font-bold whitespace-nowrap group">
+          <button 
+            onClick={() => { setIsVisitModalOpen(true); setIsFabOpen(false); }}
+            className="bg-white border-2 border-brand-blue hover:bg-brand-blue hover:text-white text-[#1C202F] px-5 py-3 rounded-full flex items-center gap-3 shadow-lg hover:shadow-xl transition-all duration-300 font-bold whitespace-nowrap group cursor-pointer hover:-translate-y-0.5 active:translate-y-0"
+          >
             <span className="text-[13px] md:text-[14px]">Agendar Visita</span>
-            <Calendar className="w-5 h-5 text-[#475569] group-hover:text-brand-blue transition-colors" />
+            <Calendar className="w-5 h-5 text-[#475569] group-hover:text-white transition-colors" />
           </button>
 
-          <button className="bg-[#10B981] hover:bg-[#059669] text-white px-5 py-3 rounded-full flex items-center gap-3 shadow-lg transition-colors font-bold whitespace-nowrap">
+          <button 
+            onClick={() => {
+              const msg = encodeURIComponent("Olá, Sono & Cia! Gostaria de falar com um de seus consultores especialistas e ter um atendimento VIP para escolher meu colchão ideal!");
+              window.open(`https://wa.me/55${storeSettings.whatsapp.replace(/\D/g, '')}?text=${msg}`, '_blank', 'noreferrer,noopener');
+              setIsFabOpen(false);
+            }}
+            className="bg-[#10B981] hover:bg-[#059669] text-white px-5 py-3 rounded-full flex items-center gap-3 shadow-lg hover:shadow-emerald-100/10 cursor-pointer transition-all duration-300 font-bold whitespace-nowrap hover:-translate-y-0.5 active:translate-y-0"
+          >
             <span className="text-[13px] md:text-[14px]">WhatsApp VIP</span>
             <MessageCircle className="w-5 h-5 text-white" />
           </button>
